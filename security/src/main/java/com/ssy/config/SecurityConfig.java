@@ -2,7 +2,6 @@ package com.ssy.config;
 
 import com.ssy.filter.CustomAuthenticationFilter;
 import com.ssy.filter.JwtAuthorizationFilter;
-import com.ssy.filter.TokenAutoHeaderFilter;
 import com.ssy.handler.CustomAccessDeniedHandler;
 import com.ssy.properties.SecurityProperties;
 import com.ssy.service.CustomUserDetailsService;
@@ -11,14 +10,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
-import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 // 假设你已经实现了这两个自定义过滤器，用于处理 JSON 登录和 JWT 授权
@@ -94,9 +90,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin().disable();
         // 设置 Session 管理为无状态，不在服务端保存 Session 信息
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        // 添加 Token 自动头部过滤器，在最前面处理token
-        http.addFilterBefore(new TokenAutoHeaderFilter(), CustomAuthenticationFilter.class);
         // 添加自定义认证过滤器（处理 JSON 格式的登录请求）
         http.addFilter(customAuthenticationFilter());
         // 添加 JWT 授权过滤器，在认证过滤器之前拦截请求，根据请求头中的 JWT Token 进行授权验证

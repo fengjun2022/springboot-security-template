@@ -26,7 +26,7 @@ public class ServiceAppController {
     @Autowired
     private ServiceAppService serviceAppService;
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/register")
     public Result<ServiceAppEntity> registerApp(@RequestBody ServiceAppRegisterDTO registerDTO) {
         try {

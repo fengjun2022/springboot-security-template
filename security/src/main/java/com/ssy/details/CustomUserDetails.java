@@ -87,7 +87,7 @@ public class CustomUserDetails implements UserDetails {
     /**
      * 获取用户实体
      */
-    public com.ssy.dto.UserEntity getUser() {
+    public UserEntity getUser() {
         return user;
     }
 }

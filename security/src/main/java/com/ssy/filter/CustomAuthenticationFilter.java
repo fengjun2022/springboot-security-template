@@ -17,8 +17,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -54,7 +52,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         // 使用OrRequestMatcher支持多个登录URL
         OrRequestMatcher orMatcher = new OrRequestMatcher(
                 new AntPathRequestMatcher("/login", "POST"),
-                new AntPathRequestMatcher("/login-admin", "POST"));
+                new AntPathRequestMatcher("/login-admin", "POST")
+        );
 
         // 设置多路径匹配器
         setRequiresAuthenticationRequestMatcher(orMatcher);
@@ -62,8 +61,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     // 从请求中解析 JSON 格式的用户名和密码
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
             // 获取请求路径，可以在后续逻辑中区分用户类型
             String requestUri = request.getRequestURI();
@@ -74,8 +72,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
             LoginRequest loginRequest = mapper.readValue(request.getInputStream(), LoginRequest.class);
 
             // 构造认证令牌，传入用户名和密码
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    loginRequest.getUsername(), loginRequest.getPassword());
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
 
             // 可以在这里添加额外的认证细节，比如用户类型
             if (isAdminLogin) {
@@ -94,8 +92,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     // 认证成功后生成 JWT Token，并写入响应头中
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
-            Authentication authResult) throws IOException, ServletException {
-        SecurityContextHolder.getContext().setAuthentication(authResult);
+                                            Authentication authResult) throws IOException, ServletException {
+//        SecurityContextHolder.getContext().setAuthentication(authResult);
 
         // 获取用户信息
         CustomUserDetails userDetails = (CustomUserDetails) authResult.getPrincipal();
@@ -103,25 +101,28 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         // 获取登录类型（可以根据需要在token中添加不同的claim）
         String loginType = (String) authResult.getDetails();
 
-        // 生成 JWT Token（可在 token 中附加更多自定义信息，如角色、权限等）
+        // 生成权限字符串
+        String authoritiesString = userDetails.getAuthorities().stream()
+                .map(authority -> {
+                    return authority.getAuthority();
+                })
+                .collect(Collectors.joining(","));
+
+
         String token = JWT.create()
                 .withSubject(userDetails.getUsername())
-                .withClaim("authorities", userDetails.getAuthorities().stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .collect(Collectors.joining(",")))
-                .withClaim("loginType", loginType) // 添加登录类型
+                .withClaim("authorities", authoritiesString) // 使用简单的逗号分隔格式
+                .withClaim("userId", userDetails.getUser().getUserId()) // 添加userId
+                .withClaim("status", userDetails.getUser().getStatus()) // 添加status
+                .withClaim("loginType", loginType)
                 .withExpiresAt(new Date(System.currentTimeMillis() + jwtProperties.getTtl()))
                 .sign(Algorithm.HMAC256(jwtProperties.getSecretKey().getBytes()));
-
         // 将 Token 写入响应头，前端需保存并在后续请求中携带该 Token
         response.addHeader(jwtProperties.getHeadName(), jwtProperties.getHeadBase() + token);
-
-        // 构建用户响应数据
         UserEntity userDetailsUser = userDetails.getUser();
-        userDetailsUser.setToken(token); // 确保token在响应体中
-        userDetailsUser.setPassword(null); // 清除密码
-
-        // 构建返回数据，包含完整的用户信息和token
+        userDetailsUser.setToken(token);
+        userDetailsUser.setPassword(null);
+        // 构建返回数据，Result.success 方法封装了成功状态和数据（此处返回用户名）
         Result<UserEntity> result = Result.success(userDetailsUser);
 
         // 设置响应类型为 JSON 并写入响应体
@@ -131,8 +132,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request,
-            HttpServletResponse response,
-            AuthenticationException failed)
+                                              HttpServletResponse response,
+                                              AuthenticationException failed)
             throws IOException, ServletException {
         // 设置 HTTP 状态码为 401，表示用户未通过认证
         response.setStatus(HttpStatus.NOT_LOGIN);

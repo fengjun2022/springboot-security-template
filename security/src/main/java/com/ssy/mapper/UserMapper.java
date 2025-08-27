@@ -2,7 +2,9 @@ package com.ssy.mapper;
 
 import com.ssy.annotation.AutoGenerateSnowflakeId;
 import com.ssy.dto.UserEntity;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * TODO
@@ -22,7 +24,7 @@ public interface UserMapper {
 
     void register(UserEntity user);
 
-    @Select("select id, username, password, authorities,status from user where username = #{username}")
+    @Select("select id, user_id,username, password, authorities,status from user where username = #{username}")
 
     UserEntity queryUser(String username);
 }
