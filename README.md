@@ -122,6 +122,8 @@ zxy-admin/
 | **MySQL** | 8.0+ | 支持JSON字段 |
 | **Maven** | 3.6+ | 依赖管理 |
 | **Redis** | 6.0+ | 可选，用于缓存 |
+自带的管理界面（未完善）
+http://localhost:8080/admin/login
 
 ### 2. 数据库初始化
 
