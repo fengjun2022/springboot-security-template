@@ -7,6 +7,9 @@ import com.ssy.service.PermissionCacheService;
 import com.ssy.service.ServiceTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -18,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +34,7 @@ import java.util.Set;
  * @date 2025/1/27
  * @email 3278440884@qq.com
  */
-@Component
+
 @Order(1) // 设置高优先级，早于其他Filter执行
 public class ServicePermissionFilter extends OncePerRequestFilter {
 
@@ -76,14 +80,17 @@ public class ServicePermissionFilter extends OncePerRequestFilter {
 
         // 检查是否为服务间调用
         String serviceCallFlag = request.getHeader(SERVICE_CALL_HEADER);
+        System.err.println("=== X-Service-Call header: " + serviceCallFlag);
+
         if (!"true".equals(serviceCallFlag)) {
-            // 不是服务间调用，跳过权限验证
             filterChain.doFilter(request, response);
             return;
         }
 
+
         // 获取appId
         String appId = request.getHeader(APP_ID_HEADER);
+
         if (!StringUtils.hasText(appId)) {
             writeErrorResponse(response, "缺少appId参数");
             return;
@@ -91,6 +98,7 @@ public class ServicePermissionFilter extends OncePerRequestFilter {
 
         // 获取token
         String authorization = request.getHeader(TOKEN_HEADER);
+
         if (!StringUtils.hasText(authorization) || !authorization.startsWith(TOKEN_PREFIX)) {
             writeErrorResponse(response, "缺少有效的Authorization Token");
             return;
@@ -100,6 +108,7 @@ public class ServicePermissionFilter extends OncePerRequestFilter {
 
         // 验证token
         ServiceTokenEntity serviceToken = serviceTokenService.validateToken(token);
+
         if (serviceToken == null) {
             writeErrorResponse(response, "Token验证失败");
             return;
@@ -113,10 +122,23 @@ public class ServicePermissionFilter extends OncePerRequestFilter {
 
         // 检查权限
         boolean hasPermission = permissionCacheService.hasPermission(appId, requestPath);
+        System.err.println("=== 权限检查结果: " + hasPermission + " for " + appId + " -> " + requestPath);
+
         if (!hasPermission) {
+            System.err.println("=== 无权限访问该接口: " + requestPath);
             writeErrorResponse(response, "无权限访问该接口: " + requestPath);
             return;
         }
+
+
+        // *** 关键修复：设置服务认证上下文 ***
+        // 创建一个服务认证主体，告诉Spring Security这是一个已认证的服务请求
+        UsernamePasswordAuthenticationToken serviceAuth = new UsernamePasswordAuthenticationToken(
+                "SERVICE_" + appId, // 主体标识
+                null, // 凭证
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_SERVICE")) // 服务角色
+        );
+        SecurityContextHolder.getContext().setAuthentication(serviceAuth);
 
         // 权限验证通过，继续执行
         filterChain.doFilter(request, response);

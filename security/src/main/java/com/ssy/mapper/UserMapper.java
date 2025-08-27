@@ -2,9 +2,7 @@ package com.ssy.mapper;
 
 import com.ssy.annotation.AutoGenerateSnowflakeId;
 import com.ssy.dto.UserEntity;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 /**
  * TODO

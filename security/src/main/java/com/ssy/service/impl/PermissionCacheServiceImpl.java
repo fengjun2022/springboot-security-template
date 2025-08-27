@@ -6,10 +6,13 @@ import com.ssy.entity.ServiceAppEntity;
 import com.ssy.service.PermissionCacheService;
 import com.ssy.service.ServiceAppService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -24,6 +27,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @email 3278440884@qq.com
  */
 @Service
+@EnableScheduling
 public class PermissionCacheServiceImpl implements PermissionCacheService {
 
     @Autowired
@@ -40,6 +44,7 @@ public class PermissionCacheServiceImpl implements PermissionCacheService {
     private final AtomicLong cacheHits = new AtomicLong(0);
     private final AtomicLong cacheMisses = new AtomicLong(0);
 
+    @PostConstruct
     @Override
     public void initPermissionCache() {
         try {
@@ -74,8 +79,15 @@ public class PermissionCacheServiceImpl implements PermissionCacheService {
         }
     }
 
+    /**
+     * 每5分钟刷新一次缓存
+     */
+
+
     @Override
     public boolean hasPermission(String appId, String apiPath) {
+
+
         List<String> allowedApis = permissionCache.get(appId);
 
         if (allowedApis == null) {
@@ -87,11 +99,21 @@ public class PermissionCacheServiceImpl implements PermissionCacheService {
                 return false;
             }
 
-            // 更新缓存
-            refreshAppPermission(appId);
-            allowedApis = permissionCache.get(appId);
+            // *** 关键修复：直接在这里处理权限解析，避免重复查询数据库 ***
+            if (StringUtils.hasText(serviceApp.getAllowedApis())) {
+                try {
+                    allowedApis = JSON.parseObject(serviceApp.getAllowedApis(),
+                            new TypeReference<List<String>>() {});
 
-            if (allowedApis == null) {
+                    if (!CollectionUtils.isEmpty(allowedApis)) {
+                        permissionCache.put(appId, allowedApis);
+                    } else {
+                        return false;
+                    }
+                } catch (Exception e) {
+                    return false;
+                }
+            } else {
                 return false;
             }
         } else {
@@ -110,10 +132,10 @@ public class PermissionCacheServiceImpl implements PermissionCacheService {
 
     @Override
     public void refreshAppPermission(String appId) {
+
         ServiceAppEntity serviceApp = serviceAppService.getByAppId(appId);
 
         if (serviceApp == null || serviceApp.getStatus() != 1) {
-            // 应用不存在或已禁用，移除缓存
             permissionCache.remove(appId);
             return;
         }
@@ -121,15 +143,15 @@ public class PermissionCacheServiceImpl implements PermissionCacheService {
         if (StringUtils.hasText(serviceApp.getAllowedApis())) {
             try {
                 List<String> allowedApis = JSON.parseObject(serviceApp.getAllowedApis(),
-                        new TypeReference<List<String>>() {
-                        });
+                        new TypeReference<List<String>>() {});
+
                 if (!CollectionUtils.isEmpty(allowedApis)) {
                     permissionCache.put(appId, allowedApis);
                 } else {
                     permissionCache.remove(appId);
                 }
             } catch (Exception e) {
-                System.err.println("刷新应用权限缓存失败，appId: " + appId + ", error: " + e.getMessage());
+                e.printStackTrace();
                 permissionCache.remove(appId);
             }
         } else {
@@ -168,7 +190,7 @@ public class PermissionCacheServiceImpl implements PermissionCacheService {
 
     /**
      * 匹配模式，支持通配符*
-     * 
+     *
      * @param path    请求路径
      * @param pattern 匹配模式
      * @return 是否匹配
@@ -210,8 +232,10 @@ public class PermissionCacheServiceImpl implements PermissionCacheService {
 
     @Override
     public double getHitRate() {
-        // 简单实现，实际项目中可以统计命中率
-        return 95.0;
+        long hits = cacheHits.get();
+        long misses = cacheMisses.get();
+        long total = hits + misses;
+        return total > 0 ? (double) hits / total * 100 : 0;
     }
 
     @Override

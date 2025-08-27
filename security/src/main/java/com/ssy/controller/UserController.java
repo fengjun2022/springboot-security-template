@@ -1,7 +1,7 @@
 package com.ssy.controller;
 
-import com.ssy.dto.UserEntity;
 import com.ssy.entity.Result;
+import com.ssy.dto.UserEntity;
 import com.ssy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

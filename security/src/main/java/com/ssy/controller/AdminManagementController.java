@@ -1,20 +1,26 @@
 package com.ssy.controller;
 
 import com.common.result.Result;
-import com.ssy.entity.ApiEndpointEntity;
 import com.ssy.entity.ServiceAppEntity;
 import com.ssy.entity.ServiceTokenEntity;
-import com.ssy.service.*;
+import com.ssy.entity.ApiEndpointEntity;
+import com.ssy.service.AdminManagementService;
+import com.ssy.service.ApiEndpointService;
+import com.ssy.service.ServiceAppService;
+import com.ssy.service.ServiceTokenService;
+import com.ssy.service.UserService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * 管理员权限管理页面控制器

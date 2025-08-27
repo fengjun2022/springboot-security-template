@@ -2,7 +2,6 @@
 security:
   permit-all: # 权限访问白名单
     - "/login"
-    - "/admin/*"
     - "/css/**"
     - "/js/**"
     - "/user/**"

@@ -3,10 +3,12 @@ package com.ssy.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.ssy.entity.ServiceAppEntity;
+import com.ssy.event.AppPermissionChangeEvent;
 import com.ssy.mapper.ServiceAppMapper;
 import com.ssy.service.ServiceAppService;
 import com.ssy.utils.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -18,6 +20,7 @@ import java.util.List;
 
 /**
  * 服务应用Service实现类
+ * 通过事件机制解决循环依赖问题
  *
  * @author Mr.fengjun
  * @version 1.0
@@ -32,6 +35,9 @@ public class ServiceAppServiceImpl implements ServiceAppService {
 
     @Autowired
     private IdGenerator idGenerator;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
@@ -57,6 +63,9 @@ public class ServiceAppServiceImpl implements ServiceAppService {
 
         // 插入数据库
         serviceAppMapper.insert(serviceApp);
+
+        // 发布应用创建事件，由监听器处理缓存更新
+        eventPublisher.publishEvent(new AppPermissionChangeEvent(this, serviceApp.getAppId(), AppPermissionChangeEvent.Type.CREATE));
 
         // 设置返回对象的接口列表
         serviceApp.setAllowedApiList(allowedApis);
@@ -106,17 +115,38 @@ public class ServiceAppServiceImpl implements ServiceAppService {
         serviceApp.setUpdateTime(LocalDateTime.now());
         serviceAppMapper.update(serviceApp);
 
+        // 发布权限更新事件
+        eventPublisher.publishEvent(new AppPermissionChangeEvent(this, serviceApp.getAppId(), AppPermissionChangeEvent.Type.UPDATE));
+
         return getById(serviceApp.getId());
     }
 
     @Override
     public void updateStatus(Long id, Integer status) {
+        // 先获取appId
+        ServiceAppEntity app = serviceAppMapper.selectById(id);
+
         serviceAppMapper.updateStatus(id, status);
+
+        // 发布状态变更事件
+        if (app != null) {
+            AppPermissionChangeEvent.Type eventType = status == 1 ?
+                    AppPermissionChangeEvent.Type.ENABLE : AppPermissionChangeEvent.Type.DISABLE;
+            eventPublisher.publishEvent(new AppPermissionChangeEvent(this, app.getAppId(), eventType));
+        }
     }
 
     @Override
     public void deleteApp(Long id) {
+        // 先获取appId
+        ServiceAppEntity app = serviceAppMapper.selectById(id);
+
         serviceAppMapper.deleteById(id);
+
+        // 发布删除事件
+        if (app != null) {
+            eventPublisher.publishEvent(new AppPermissionChangeEvent(this, app.getAppId(), AppPermissionChangeEvent.Type.DELETE));
+        }
     }
 
     @Override
@@ -186,7 +216,7 @@ public class ServiceAppServiceImpl implements ServiceAppService {
 
     /**
      * 匹配模式，支持通配符*
-     * 
+     *
      * @param path    请求路径
      * @param pattern 匹配模式
      * @return 是否匹配
@@ -208,6 +238,14 @@ public class ServiceAppServiceImpl implements ServiceAppService {
         if (pattern.startsWith("*")) {
             String suffix = pattern.substring(1);
             return path.endsWith(suffix); // 后缀匹配
+        }
+
+        if (pattern.contains("*")) {
+            // 中间包含通配符的复杂匹配
+            String[] parts = pattern.split("\\*");
+            if (parts.length == 2) {
+                return path.startsWith(parts[0]) && path.endsWith(parts[1]);
+            }
         }
 
         return false;

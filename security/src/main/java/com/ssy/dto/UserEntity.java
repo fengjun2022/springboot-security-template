@@ -1,7 +1,6 @@
 package com.ssy.dto;
 
 import lombok.Data;
-
 import java.util.Collection;
 
 /**

@@ -16,6 +16,7 @@ import com.ssy.entity.Result;
 import com.ssy.properties.JwtProperties;
 import com.ssy.properties.SecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
@@ -29,7 +30,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Order(2)
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Autowired
     JwtProperties jwtProperties;
@@ -39,6 +40,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
 
         String requestURI = request.getRequestURI();
         response.setContentType("application/json;charset=UTF-8");
@@ -92,6 +94,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                             .filter(s -> !s.isEmpty())
                             .collect(Collectors.toList());
                     user.setAuthorities(authorities);
+                    System.err.println("用户权限: " + user.getAuthorities());
                 }
 
                 // 创建CustomUserDetails

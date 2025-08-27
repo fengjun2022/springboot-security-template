@@ -2,6 +2,7 @@ package com.ssy.config;
 
 import com.ssy.filter.CustomAuthenticationFilter;
 import com.ssy.filter.JwtAuthorizationFilter;
+import com.ssy.filter.ServicePermissionFilter;
 import com.ssy.handler.CustomAccessDeniedHandler;
 import com.ssy.properties.SecurityProperties;
 import com.ssy.service.CustomUserDetailsService;
@@ -17,7 +18,7 @@ import org.springframework.security.config.annotation.web.configurers.Expression
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-// 假设你已经实现了这两个自定义过滤器，用于处理 JSON 登录和 JWT 授权
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 // 开启方法级安全权限访问控制
@@ -34,9 +35,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final SecurityProperties securityProperties;
 
+
+
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
         return new JwtAuthorizationFilter();
+    }
+
+    @Bean
+    public ServicePermissionFilter servicePermissionFilter() {
+        return new ServicePermissionFilter();
     }
 
     @Bean
@@ -46,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(CustomUserDetailsService customUserDetailsService,
-            PasswordEncoder passwordEncoder) {
+                                                               PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(customUserDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
@@ -66,6 +74,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         // 配置 CORS 策略支持跨域请求
         http.cors().and();
+
+        // *** 关键修改：添加ServicePermissionFilter到过滤器链的最前面 ***
+        http.addFilterBefore(servicePermissionFilter(), UsernamePasswordAuthenticationFilter.class);
+
         // 使用 URL 授权配置注册器统一配置所有 URL 的访问规则
         ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = http
                 .authorizeRequests();
