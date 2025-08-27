@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统层面Token测试 - 权限管理系统</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- 自定义CSS -->
+    <link href="/css/admin.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            系统层面Token自动获取测试
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle me-2"></i>测试说明</h6>
+                            <p class="mb-0">
+                                这个页面用于测试系统层面的Token自动获取功能。TokenAutoHeaderFilter会自动从Cookie中获取token并设置到请求头中。
+                            </p>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-cookie-bite me-2"></i>Token状态</h5>
+                                <div class="mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">localStorage</span>
+                                        <input type="text" class="form-control" id="localStorageToken" readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Cookie</span>
+                                        <input type="text" class="form-control" id="cookieToken" readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">登录状态</span>
+                                        <input type="text" class="form-control" id="loginStatus" readonly>
+                                    </div>
+                                </div>
+                                <button class="btn btn-outline-primary" onclick="refreshTokenStatus()">
+                                    <i class="fas fa-sync-alt me-2"></i>刷新状态
+                                </button>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-network-wired me-2"></i>API测试</h5>
+                                <div class="mb-3">
+                                    <button class="btn btn-outline-success btn-sm" onclick="testApiWithoutToken()">
+                                        <i class="fas fa-play me-1"></i>测试无token请求
+                                    </button>
+                                    <button class="btn btn-outline-info btn-sm" onclick="testApiWithToken()">
+                                        <i class="fas fa-play me-1"></i>测试系统自动token
+                                    </button>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">响应状态</span>
+                                        <input type="text" class="form-control" id="apiResponseStatus" readonly>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">API响应内容</label>
+                                    <textarea class="form-control" id="apiResponseContent" rows="6" readonly></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <h5><i class="fas fa-terminal me-2"></i>操作日志</h5>
+                                <div id="operationLog" class="bg-dark text-light p-3"
+                                    style="height: 300px; overflow-y: auto; font-family: monospace;">
+                                    <div>等待操作...</div>
+                                </div>
+                                <div class="mt-2">
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="clearLog()">
+                                        <i class="fas fa-trash me-1"></i>清空日志
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">
+                <i class="fas fa-shield-alt me-2"></i>
+                Token自动获取测试
+            </span>
+            <div class="d-flex">
+                <a href="/admin/login" class="btn btn-outline-light btn-sm me-2">
+                    <i class="fas fa-sign-in-alt me-1"></i>登录
+                </a>
+                <a href="/admin/dashboard" class="btn btn-outline-light btn-sm me-2">
+                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                </a>
+                <a href="/test-url-login.html" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-link me-1"></i>URL登录测试
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Admin JS -->
+    <script src="/js/admin.js"></script>
+
+    <script>
+        // 页面加载时初始化
+        $(document).ready(function () {
+            log('🚀 系统层面Token测试页面已加载');
+            refreshTokenStatus();
+
+            // 设置全局AJAX错误处理
+            $(document).ajaxError(function (event, xhr, settings, error) {
+                log('❌ AJAX错误: ' + xhr.status + ' ' + error);
+                log('请求URL: ' + settings.url);
+                $('#apiResponseStatus').val(xhr.status + ' ' + error);
+                $('#apiResponseContent').val(xhr.responseText || '无响应内容');
+            });
+        });
+
+        // 刷新token状态
+        function refreshTokenStatus() {
+            log('🔄 刷新token状态...');
+
+            // 获取localStorage中的token
+            const localStorageToken = AdminToken.getToken();
+            $('#localStorageToken').val(localStorageToken ? localStorageToken.substring(0, 30) + '...' : '无');
+
+            // 获取Cookie中的token
+            const cookieToken = AdminToken.getCookie();
+            $('#cookieToken').val(cookieToken ? cookieToken.substring(0, 30) + '...' : '无');
+
+            // 检查登录状态
+            const isLoggedIn = AdminToken.isLoggedIn();
+            $('#loginStatus').val(isLoggedIn ? '已登录' : '未登录');
+
+            log('✅ Token状态已刷新');
+        }
+
+        // 测试无token的API请求
+        function testApiWithoutToken() {
+            log('🧪 测试无token的API请求...');
+
+            // 临时清除Authorization头来模拟无token请求
+            $.ajax({
+                url: '/admin/api/system/status',
+                method: 'GET',
+                headers: {
+                    'Authorization': ''  // 空Authorization头
+                },
+                success: function (data) {
+                    log('✅ 无token请求成功');
+                    $('#apiResponseStatus').val('200 OK');
+                    $('#apiResponseContent').val(JSON.stringify(data, null, 2));
+                },
+                error: function (xhr) {
+                    log('❌ 无token请求失败: ' + xhr.status);
+                    $('#apiResponseStatus').val(xhr.status + ' ' + xhr.statusText);
+                    $('#apiResponseContent').val(xhr.responseText || '无响应内容');
+                }
+            });
+        }
+
+        // 测试系统自动token的API请求
+        function testApiWithToken() {
+            log('🔐 测试系统自动token的API请求...');
+
+            // 不设置Authorization头，让TokenAutoHeaderFilter自动处理
+            $.ajax({
+                url: '/admin/api/system/status',
+                method: 'GET',
+                success: function (data) {
+                    log('✅ 自动token请求成功');
+                    $('#apiResponseStatus').val('200 OK');
+                    $('#apiResponseContent').val(JSON.stringify(data, null, 2));
+                },
+                error: function (xhr) {
+                    log('❌ 自动token请求失败: ' + xhr.status);
+                    $('#apiResponseStatus').val(xhr.status + ' ' + xhr.statusText);
+                    $('#apiResponseContent').val(xhr.responseText || '无响应内容');
+                }
+            });
+        }
+
+        // 日志记录
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `<div>[${timestamp}] ${message}</div>`;
+            $('#operationLog').append(logEntry);
+            $('#operationLog').scrollTop($('#operationLog')[0].scrollHeight);
+        }
+
+        // 清空日志
+        function clearLog() {
+            $('#operationLog').html('<div>日志已清空</div>');
+        }
+    </script>
+</body>
+
+</html>

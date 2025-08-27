@@ -1,0 +1,61 @@
+#file: noinspection SpringBootApplicationYaml,SpringBootApplicationYaml,SpringBootApplicationYaml,SpringBootApplicationYaml,SpringBootApplicationYaml
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  profiles:
+    active: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${sbt.datasource.host}:${sbt.datasource.port}/${sbt.datasource.database}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${sbt.datasource.username}
+    password: ${sbt.datasource.password}
+    hikari:
+      # 连接池配置
+      minimum-idle: 5
+      maximum-pool-size: 20
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: DatebookHikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+
+  servlet:
+    multipart:
+      max-request-size: 50MB
+      max-file-size: 50MB
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+
+server:
+  port: 8080
+
+#debug: true
+# 设置日志级别，root表示根节点，即整体应用日志级别
+logging:
+  level:
+    root: info     #root级别
+    #日志级别从低到高：TRACE < DEBUG < INFO（开发） < WARN（生产系统上线时） < ERROR（生产系统上线时）< FATAL
+    com.jcj.mydemo: warn     # package级别
+  #Spring Boot默认使用LogBack日志系统，日志默认输出到控制台的
+  file:  # 日志输入一个固定的地方，存在文件里
+    name: logs/system.log        # 将日志存在logs下的system.log日志中
+
+knife4j:
+  production: false
+  documents:
+    - group: 默认分组
+      name: 接口说明
+      locations: classpath:markdown/*
+  setting:
+    language: zh_cn
+    swagger-model-name: 实体类列表
+
+
+
+

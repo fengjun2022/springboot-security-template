@@ -1,0 +1,38 @@
+
+security:
+  permit-all: # 权限访问白名单
+    - "/login"
+    - "/admin/*"
+    - "/css/**"
+    - "/js/**"
+    - "/user/**"
+    - "/doc.html"
+    - "/swagger-ui.html"
+    - "/swagger-ui/**"
+    - "/swagger-resources/**"
+    - "/v2/api-docs"
+    - "/v2/api-docs/**"
+    - "/v3/api-docs"
+    - "/v3/api-docs/**"
+    - "/webjars/**"
+    - "/api/service-token/issue"
+  role-based: # 需要权限名单
+    - pattern: "/admin/**"
+      role: ADMIN
+    - pattern: "/manager/**"
+      role: MANAGER
+
+jwt:
+  secret-key: nangtongcourtjj1001001
+  ttl: 28800000
+  head-name: Authorization
+  head-base: "Bearer "
+
+mybatis:
+  type-handlers-package: com.ssy.handler #集合类型转换
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+    plugins:
+      - com.ssy.mybatis.SnowflakeIdInterceptor #拦截器自动生成雪花id

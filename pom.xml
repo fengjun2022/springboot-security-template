@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.7.16</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.security-template</groupId>
+	<artifactId>parent</artifactId>
+	<version>1.0.0</version>
+	<packaging>pom</packaging>
+
+
+	<modules>
+		<module>common</module>
+		<module>pojo</module>
+		<module>server</module>
+		<module>security</module>
+	</modules>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<mybatis.spring>2.3.1</mybatis.spring>
+		<lombok>1.18.20</lombok>
+		<fastjson>1.2.76</fastjson>
+		<pagehelper>1.4.1</pagehelper>
+		<aspectj>1.9.4</aspectj>
+        <log4j>2.8.2</log4j>
+		<security>2.2.5.RELEASE</security>
+		<oauth2>2.2.5.RELEASE</oauth2>
+		<java.jwt>4.2.1</java.jwt>
+		<spring-web>2.5.5</spring-web>
+		<javax>2.3.0</javax>
+		<fasterxml>1.5.1</fasterxml>
+		<knife4j>3.0.3</knife4j>
+		<springfox>3.0.0</springfox>
+
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- 使用 Springfox Swagger 3.0.0 -->
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-boot-starter</artifactId>
+				<version>${springfox}</version>
+			</dependency>
+
+			<!-- Knife4j 2.x 系列（适用于 Spring Boot 2.5.5） -->
+			<dependency>
+				<groupId>com.github.xiaoymin</groupId>
+				<artifactId>knife4j-spring-boot-starter</artifactId>
+				<version>${knife4j}</version>
+			</dependency>
+
+			<!-- 显式补充 classmate，确保 TypeResolver 可用 -->
+			<dependency>
+				<groupId>com.fasterxml</groupId>
+				<artifactId>classmate</artifactId>
+				<version>${fasterxml}</version> <!-- 或 1.6.x，任选其一，保持与 Springfox 兼容 -->
+			</dependency>
+
+
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-starter-security</artifactId>
+				<version>${security}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-starter-oauth2</artifactId>
+				<version>${oauth2}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>2021.0.7</version> <!-- 兼容 Spring Boot 2.7.x -->
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-web</artifactId>
+				<version>${spring-web}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.xml.bind</groupId>
+				<artifactId>jaxb-api</artifactId>
+				<version>${javax}</version>
+			</dependency>
+
+
+
+			<dependency>
+				<groupId>org.mybatis.spring.boot</groupId>
+				<artifactId>mybatis-spring-boot-starter</artifactId>
+				<version>${mybatis.spring}</version>
+			</dependency>
+
+<!--			<dependency>-->
+<!--				<groupId>org.mybatis.spring.boot</groupId>-->
+<!--				<artifactId>mybatis-spring-boot-starter-test</artifactId>-->
+<!--				<version>2.3.1</version>-->
+<!--			</dependency>-->
+
+
+
+			<dependency>
+				<groupId>com.auth0</groupId>
+				<artifactId>java-jwt</artifactId>
+				<version>${java.jwt}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.github.pagehelper</groupId>
+				<artifactId>pagehelper-spring-boot-starter</artifactId>
+				<version>${pagehelper}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjrt</artifactId>
+				<version>${aspectj}</version>
+			</dependency>
+
+
+
+
+
+			<dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjweaver</artifactId>
+				<version>${aspectj}</version>
+			</dependency>
+
+
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>${fastjson}</version>
+			</dependency>
+
+
+
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-api</artifactId>
+				<version>${log4j}</version>
+			</dependency>
+
+
+
+
+
+		</dependencies>
+
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			     <version>3.1</version>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
