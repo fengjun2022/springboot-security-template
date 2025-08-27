@@ -680,9 +680,11 @@ mvn spring-boot:run
 
 <div align="center">
 
-**🏥 为医院信息化建设提供强大的技术支撑**
+** 为API安全提供强大的技术支撑**
 
 Made with ❤️ by Hospital IT Team
+
+## 作者： 冯骏
 
 [⬆ 回到顶部](#---服务间调用权限管理--api接口自动扫描)
 
