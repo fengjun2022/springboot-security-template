@@ -9255,3 +9255,33 @@ Identify and stop the process that's listening on port 8080 or configure this ap
 2025-08-27 09:35:10.926  INFO 81638 --- [restartedMain] com.ssy.config.ApiEndpointScannerConfig  : 📊 扫描结果：新增 0 个接口，耗时 6529 ms
 2025-08-27 09:38:12.088  INFO 81638 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Shutdown initiated...
 2025-08-27 09:38:12.203  INFO 81638 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Shutdown completed.
+2025-08-27 10:48:26.115  INFO 23032 --- [restartedMain] com.main.MainApplication                 : Starting MainApplication using Java 11.0.27 on fengjun.local with PID 23032 (/Users/fengjun/Desktop/prejoct/hospital/springboot-security-template/server/target/classes started by fengjun in /Users/fengjun/Desktop/prejoct/hospital/springboot-security-template)
+2025-08-27 10:48:26.116  INFO 23032 --- [restartedMain] com.main.MainApplication                 : The following 1 profile is active: "dev"
+2025-08-27 10:48:26.138  INFO 23032 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-08-27 10:48:26.138  INFO 23032 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-08-27 10:48:26.675  INFO 23032 --- [restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=2a291938-6ead-3fca-9196-b793a287c801
+2025-08-27 10:48:26.939  INFO 23032 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2025-08-27 10:48:26.942  INFO 23032 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-08-27 10:48:26.942  INFO 23032 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.80]
+2025-08-27 10:48:26.973  INFO 23032 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-08-27 10:48:26.973  INFO 23032 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 835 ms
+2025-08-27 10:48:27.904  INFO 23032 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint(s) beneath base path '/actuator'
+2025-08-27 10:48:28.005  INFO 23032 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-08-27 10:48:28.154  INFO 23032 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@5b4af1c8, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@47f54527, org.springframework.security.web.context.SecurityContextPersistenceFilter@701109ee, org.springframework.security.web.header.HeaderWriterFilter@7dfdbf58, org.springframework.web.filter.CorsFilter@5f2dfcca, org.springframework.security.web.authentication.logout.LogoutFilter@7234e217, com.ssy.filter.JwtAuthorizationFilter@309310b1, com.ssy.filter.CustomAuthenticationFilter@1a841396, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5abbd93c, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4233d3b7, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@64ea7009, org.springframework.security.web.session.SessionManagementFilter@3c9a56f8, org.springframework.security.web.access.ExceptionTranslationFilter@5c16459b, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@19af51a1]
+2025-08-27 10:48:28.181  WARN 23032 --- [restartedMain] s.o.SpringCloudSecurityAutoConfiguration : All Spring Cloud Security modules and starters are deprecated. They will be moved to individual projects in the next major release.
+2025-08-27 10:48:28.226  INFO 23032 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2025-08-27 10:48:28.296  INFO 23032 --- [restartedMain] com.main.MainApplication                 : Started MainApplication in 2.424 seconds (JVM running for 2.808)
+2025-08-27 10:48:28.299  INFO 23032 --- [restartedMain] com.ssy.config.ApiEndpointScannerConfig  : 🚀 应用启动完成，开始自动扫描API接口...
+2025-08-27 10:48:28.299  INFO 23032 --- [PermissionCacheInit] c.ssy.config.PermissionCacheInitializer  : 🔄 开始初始化权限缓存... (尝试 1/3)
+2025-08-27 10:48:28.301  INFO 23032 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Starting...
+2025-08-27 10:48:28.606  INFO 23032 --- [RMI TCP Connection(1)-127.0.0.1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-08-27 10:48:28.606  INFO 23032 --- [RMI TCP Connection(1)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-08-27 10:48:28.608  INFO 23032 --- [RMI TCP Connection(1)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2025-08-27 10:48:29.044  INFO 23032 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Start completed.
+2025-08-27 10:48:29.108  INFO 23032 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 开始扫描系统中的所有API接口...
+2025-08-27 10:48:30.462  INFO 23032 --- [PermissionCacheInit] c.ssy.config.PermissionCacheInitializer  : ✅ 权限缓存初始化成功
+2025-08-27 10:48:34.687  INFO 23032 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : API接口扫描完成，共扫描到 30 个接口，新增 0 个
+2025-08-27 10:48:34.806  INFO 23032 --- [restartedMain] com.ssy.config.ApiEndpointScannerConfig  : ✅ API接口自动扫描完成！
+2025-08-27 10:48:34.806  INFO 23032 --- [restartedMain] com.ssy.config.ApiEndpointScannerConfig  : 📊 扫描结果：新增 0 个接口，耗时 6507 ms
+2025-08-27 10:50:02.008  INFO 23032 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Shutdown initiated...
+2025-08-27 10:50:02.011  INFO 23032 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Shutdown completed.
