@@ -4,6 +4,7 @@ import com.ssy.service.ApiEndpointService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -25,13 +26,20 @@ import org.springframework.stereotype.Component;
 public class ApiEndpointScannerConfig implements ApplicationListener<ApplicationReadyEvent> {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiEndpointScannerConfig.class);
-
+    @Value("${api.scan.enabled:true}")
+    private boolean apiScanEnabled;
     @Autowired
     private ApiEndpointService apiEndpointService;
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         try {
+
+            if (!apiScanEnabled) {
+                logger.info("API扫描功能已关闭，跳过扫描操作");
+                return;
+            }
+
             logger.info("🚀 应用启动完成，开始自动扫描API接口...");
 
             long startTime = System.currentTimeMillis();

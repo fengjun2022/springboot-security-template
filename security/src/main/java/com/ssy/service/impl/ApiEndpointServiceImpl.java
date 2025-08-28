@@ -45,22 +45,19 @@ public class ApiEndpointServiceImpl implements ApiEndpointService {
      * API扫描功能开关，从yml配置文件读取
      * 默认值为true，即默认开启扫描功能
      */
-    @Value("${api.scan.enabled:true}")
-    private boolean apiScanEnabled;
+
 
     /**
      * API扫描详细日志开关
      */
     @Value("${api.scan.debug-log:false}")
     private boolean debugLogEnabled;
-
+    @Value("${api.scan.enabled:true}")
+    private boolean apiScanEnabled;
     @Override
     @Transactional
     public int scanAndSaveAllEndpoints() {
-        if (!apiScanEnabled) {
-            logger.info("API扫描功能已关闭，跳过扫描操作");
-            return 0;
-        }
+
 
         logger.info("开始扫描系统中的所有API接口...");
 
@@ -68,8 +65,6 @@ public class ApiEndpointServiceImpl implements ApiEndpointService {
         Map<String, Object> restControllers = applicationContext.getBeansWithAnnotation(RestController.class);
         Map<String, Object> mvcControllers = applicationContext.getBeansWithAnnotation(Controller.class);
 
-        logger.info("找到 @RestController: {}", restControllers.keySet());
-        logger.info("找到 @Controller: {}", mvcControllers.keySet());
 
         Map<String, Object> controllers = new HashMap<>(restControllers);
         controllers.putAll(mvcControllers);

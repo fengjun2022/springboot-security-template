@@ -1,7 +1,0 @@
-com/main/annotation/Orientation.class
-com/main/handler/GlobalExceptionHandler.class
-com/main/MainApplication.class
-com/main/controller/test.class
-com/main/aspect/DictionaryAspect.class
-com/main/config/SwaggerConfig$1.class
-com/main/config/SwaggerConfig.class
