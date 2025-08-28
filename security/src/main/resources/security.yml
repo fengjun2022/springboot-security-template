@@ -39,5 +39,5 @@ mybatis:
 
 api:
   scan:
-    enabled: false
+    enabled: true
     debug-log: false
