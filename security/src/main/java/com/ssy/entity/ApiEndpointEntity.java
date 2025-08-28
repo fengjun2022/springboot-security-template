@@ -54,4 +54,6 @@ public class ApiEndpointEntity {
 
     /** 备注 */
     private String remark;
+    // "权限"
+    private String auth;
 }

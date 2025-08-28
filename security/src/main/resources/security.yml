@@ -35,3 +35,9 @@ mybatis:
     map-underscore-to-camel-case: true
     plugins:
       - com.ssy.mybatis.SnowflakeIdInterceptor #拦截器自动生成雪花id
+
+
+api:
+  scan:
+    enabled: true
+    debug-log: false

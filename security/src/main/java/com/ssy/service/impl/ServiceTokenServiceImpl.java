@@ -144,7 +144,6 @@ public class ServiceTokenServiceImpl implements ServiceTokenService {
 
                 // 放入缓存
                 tokenCache.put(token, new CachedTokenInfo(serviceToken));
-                System.err.println("=== Token已放入缓存，当前缓存大小: " + tokenCache.size());
 
                 return serviceToken;
             } catch (Exception e) {

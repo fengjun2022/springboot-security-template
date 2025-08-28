@@ -32,7 +32,7 @@ import java.util.HashMap;
  * @email 3278440884@qq.com
  */
 @Api(tags = "管理员权限管理页面")
-@Controller
+@RestController
 @RequestMapping("/admin")
 public class AdminManagementController {
 

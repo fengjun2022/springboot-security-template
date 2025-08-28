@@ -122,7 +122,6 @@ public class ServicePermissionFilter extends OncePerRequestFilter {
 
         // 检查权限
         boolean hasPermission = permissionCacheService.hasPermission(appId, requestPath);
-        System.err.println("=== 权限检查结果: " + hasPermission + " for " + appId + " -> " + requestPath);
 
         if (!hasPermission) {
             System.err.println("=== 无权限访问该接口: " + requestPath);
