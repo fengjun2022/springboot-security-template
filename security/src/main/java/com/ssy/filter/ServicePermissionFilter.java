@@ -80,7 +80,6 @@ public class ServicePermissionFilter extends OncePerRequestFilter {
 
         // 检查是否为服务间调用
         String serviceCallFlag = request.getHeader(SERVICE_CALL_HEADER);
-        System.err.println("=== X-Service-Call header: " + serviceCallFlag);
 
         if (!"true".equals(serviceCallFlag)) {
             filterChain.doFilter(request, response);
@@ -124,10 +123,12 @@ public class ServicePermissionFilter extends OncePerRequestFilter {
         boolean hasPermission = permissionCacheService.hasPermission(appId, requestPath);
 
         if (!hasPermission) {
-            System.err.println("=== 无权限访问该接口: " + requestPath);
+            System.err.println("=== 无权限访问该接口: "+ "appId"+appId + requestPath);
             writeErrorResponse(response, "无权限访问该接口: " + requestPath);
             return;
         }
+
+        request.setAttribute("SERVICE_CALL_VERIFIED", true);
 
 
         // *** 关键修复：设置服务认证上下文 ***

@@ -106,7 +106,6 @@ public class ServiceTokenServiceImpl implements ServiceTokenService {
         CachedTokenInfo cachedInfo = tokenCache.get(token);
 
         if (cachedInfo != null) {
-            System.err.println("=== Token缓存命中: " + token.substring(0, 20) + "...");
 
             // 验证JWT token（这个验证很快，不需要缓存）
             try {

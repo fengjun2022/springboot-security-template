@@ -5,10 +5,18 @@ import com.ssy.filter.JwtAuthorizationFilter;
 import com.ssy.filter.ServicePermissionFilter;
 import com.ssy.handler.CustomAccessDeniedHandler;
 import com.ssy.properties.SecurityProperties;
+import com.ssy.security.ServiceCallVoter;
 import com.ssy.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.AffirmativeBased;
+import org.springframework.security.access.vote.AuthenticatedVoter;
+import org.springframework.security.access.vote.RoleVoter;
+import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -18,13 +26,14 @@ import org.springframework.security.config.annotation.web.configurers.Expression
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Configuration
-// 开启方法级安全权限访问控制
-@EnableGlobalMethodSecurity(prePostEnabled = true, // 启用 @PreAuthorize 和 @PostAuthorize
-        securedEnabled = true, // 启用 @Secured
-        jsr250Enabled = true) // 启用 @RolesAllowed)
+
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     // 声明密码编码器 Bean，用于加密和校验密码
@@ -63,9 +72,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return provider;
     }
 
+    @Bean
+    public ServiceCallVoter serviceCallVoter (){
+        return new ServiceCallVoter();
+    }
+
+
     @Autowired
     public SecurityConfig(SecurityProperties securityProperties) {
         this.securityProperties = securityProperties;
+    }
+
+    // 直接配置 AccessDecisionManager
+    @Bean
+    @Primary
+    public AccessDecisionManager accessDecisionManager(WebExpressionVoter webExpressionVoter) {
+        return new AffirmativeBased(Arrays.asList(
+                serviceCallVoter(),       // 自定义：建议对普通用户 ABSTAIN
+                webExpressionVoter,       // ★ 必须：处理 antMatchers 等表达式
+                new RoleVoter(),          // 角色投票
+                new AuthenticatedVoter()  // 是否已认证
+        ));
+    }
+
+    @Bean
+    public WebExpressionVoter webExpressionVoter() {
+        return new WebExpressionVoter();
     }
 
     @Override
@@ -80,7 +112,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 使用 URL 授权配置注册器统一配置所有 URL 的访问规则
         ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = http
-                .authorizeRequests();
+                .authorizeRequests().accessDecisionManager(accessDecisionManager(new WebExpressionVoter()));
         // 1. 加入允许所有人访问的 URL
         if (securityProperties.getPermitAll() != null) {
             for (String url : securityProperties.getPermitAll()) {

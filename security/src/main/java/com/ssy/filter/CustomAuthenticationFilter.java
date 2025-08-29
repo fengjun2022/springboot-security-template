@@ -106,7 +106,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         // 生成权限字符串
         String authoritiesString = userDetails.getAuthorities().stream()
                 .map(authority -> {
-                    System.out.println("单个权限: " + authority + ", 类型: " + authority.getClass().getName());
                     return authority.getAuthority();
                 })
                 .collect(Collectors.joining(","));
