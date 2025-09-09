@@ -24,7 +24,7 @@ public interface ServiceAppMapper {
      * @param serviceApp 服务应用实体
      */
     @AutoGenerateSnowflakeId
-    @Insert("INSERT INTO service_app (id, app_name, app_id, auth_code, allowed_apis, status, create_time, update_time, create_by, remark) "
+    @Insert("INSERT INTO service_apps (id, app_name, app_id, auth_code, allowed_apis, status, create_time, update_time, create_by, remark) "
             +
             "VALUES (#{id}, #{appName}, #{appId}, #{authCode}, #{allowedApis}, #{status}, #{createTime}, #{updateTime}, #{createBy}, #{remark})")
     void insert(ServiceAppEntity serviceApp);
@@ -35,7 +35,7 @@ public interface ServiceAppMapper {
      * @param id 主键ID
      * @return 服务应用实体
      */
-    @Select("SELECT * FROM service_app WHERE id = #{id}")
+    @Select("SELECT * FROM service_apps WHERE id = #{id}")
     ServiceAppEntity selectById(Long id);
 
     /**
@@ -44,7 +44,7 @@ public interface ServiceAppMapper {
      * @param appId 应用ID
      * @return 服务应用实体
      */
-    @Select("SELECT * FROM service_app WHERE app_id = #{appId}")
+    @Select("SELECT * FROM service_apps WHERE app_id = #{appId}")
     ServiceAppEntity selectByAppId(String appId);
 
     /**
@@ -53,7 +53,7 @@ public interface ServiceAppMapper {
      * @param appName 应用名称
      * @return 服务应用实体
      */
-    @Select("SELECT * FROM service_app WHERE app_name = #{appName}")
+    @Select("SELECT * FROM service_apps WHERE app_name = #{appName}")
     ServiceAppEntity selectByAppName(String appName);
 
     /**
@@ -61,7 +61,7 @@ public interface ServiceAppMapper {
      * 
      * @return 服务应用列表
      */
-    @Select("SELECT * FROM service_app WHERE status = 1")
+    @Select("SELECT * FROM service_apps WHERE status = 1")
     List<ServiceAppEntity> selectAllEnabled();
 
     /**
@@ -69,7 +69,7 @@ public interface ServiceAppMapper {
      * 
      * @return 服务应用列表
      */
-    @Select("SELECT * FROM service_app ORDER BY create_time DESC")
+    @Select("SELECT * FROM service_apps ORDER BY create_time DESC")
     List<ServiceAppEntity> selectAll();
 
     /**
@@ -77,7 +77,7 @@ public interface ServiceAppMapper {
      * 
      * @param serviceApp 服务应用实体
      */
-    @Update("UPDATE service_app SET app_name = #{appName}, allowed_apis = #{allowedApis}, " +
+    @Update("UPDATE service_apps SET app_name = #{appName}, allowed_apis = #{allowedApis}, " +
             "status = #{status}, update_time = #{updateTime}, update_by = #{updateBy}, remark = #{remark} " +
             "WHERE id = #{id}")
     void update(ServiceAppEntity serviceApp);
@@ -88,7 +88,7 @@ public interface ServiceAppMapper {
      * @param id     主键ID
      * @param status 状态
      */
-    @Update("UPDATE service_app SET status = #{status}, update_time = NOW() WHERE id = #{id}")
+    @Update("UPDATE service_apps SET status = #{status}, update_time = NOW() WHERE id = #{id}")
     void updateStatus(@Param("id") Long id, @Param("status") Integer status);
 
     /**
@@ -96,7 +96,7 @@ public interface ServiceAppMapper {
      * 
      * @param id 主键ID
      */
-    @Delete("DELETE FROM service_app WHERE id = #{id}")
+    @Delete("DELETE FROM service_apps WHERE id = #{id}")
     void deleteById(Long id);
 
     /**
@@ -106,6 +106,6 @@ public interface ServiceAppMapper {
      * @param authCode 授权码
      * @return 服务应用实体
      */
-    @Select("SELECT * FROM service_app WHERE app_id = #{appId} AND auth_code = #{authCode} AND status = 1")
+    @Select("SELECT * FROM service_apps WHERE app_id = #{appId} AND auth_code = #{authCode} AND status = 1")
     ServiceAppEntity validateApp(@Param("appId") String appId, @Param("authCode") String authCode);
 }
