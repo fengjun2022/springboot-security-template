@@ -1,12 +1,14 @@
 package com.ssy.service.impl;
 
-import com.pojo.entity.UserEntity;
+
+import com.ssy.dto.UserEntity;
 import com.ssy.mapper.UserMapper;
 import com.ssy.service.UserService;
 import com.ssy.utils.SecurePasswordEncryptorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -33,8 +35,10 @@ public class UserServiceimpl implements UserService {
                 .encryptPassword(user.getPassword());
         String password = stringCompletableFuture.join();
         user.setPassword(password);
-        // 暂时简化实现
-        // userMapper.register(user);
+        List<String> li = new ArrayList<>();
+        li.add("user");
+        user.setAuthorities(li);
+         userMapper.register(user);
     }
 
     @Override
@@ -45,7 +49,7 @@ public class UserServiceimpl implements UserService {
     @Override
     public List<UserEntity> getAllUsers() {
         // 暂时返回空列表
-        return new java.util.ArrayList<>();
+        return new ArrayList<>();
     }
 
     @Override
@@ -68,5 +72,10 @@ public class UserServiceimpl implements UserService {
     public UserEntity getUserById(Long userId) {
         // 暂时返回null
         return null;
+    }
+
+    @Override
+    public UserEntity userInfo(Long id) {
+        return userMapper.userInfo(id);
     }
 }

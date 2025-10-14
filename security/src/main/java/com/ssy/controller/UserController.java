@@ -1,13 +1,11 @@
 package com.ssy.controller;
 
-import com.ssy.entity.Result;
 import com.ssy.dto.UserEntity;
+import com.ssy.entity.Result;
+import com.ssy.repository.UserRepository;
 import com.ssy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * TODO
@@ -24,7 +22,9 @@ public class UserController {
 
     @Autowired
     UserService userService;
+    @Autowired
 
+    UserRepository userRepository;
     /**
      * 用户注册接口
      * 
@@ -32,10 +32,20 @@ public class UserController {
      * @return
      */
     @PostMapping("/register")
-    public Result<UserEntity> register(@RequestBody com.pojo.entity.UserEntity user) {
+    public Result<UserEntity> register(@RequestBody UserEntity user) {
         userService.register(user);
 
         return Result.success("注册成功");
     }
+
+
+    @GetMapping("/info")
+    public Result<UserEntity> userInfo(@RequestParam("userId") Long userId){
+
+        UserEntity  info =userService.userInfo(userId);
+
+        return Result.success(info);
+    }
+
 
 }

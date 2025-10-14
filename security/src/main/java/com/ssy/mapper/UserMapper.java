@@ -2,7 +2,9 @@ package com.ssy.mapper;
 
 import com.ssy.annotation.AutoGenerateSnowflakeId;
 import com.ssy.dto.UserEntity;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * TODO
@@ -15,14 +17,17 @@ import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface UserMapper {
-
-
+    // 在 #{authorities} 中指定自定义 TypeHandler，告诉 MyBatis 如何转换
     @AutoGenerateSnowflakeId(fieldName = "userId")
-    @Insert("INSERT INTO user (id, user_id,username, password, authorities) VALUES (#{id}, #{userId},#{username}, #{password}, #{authorities})")
+    @Insert("INSERT INTO user (id, user_id, username, password, authorities) " +
+            "VALUES (#{id}, #{userId}, #{username}, #{password}, #{authorities, typeHandler=com.ssy.handler.ListTypeHandler})")
+// 注意：com.xxx.ListTypeHandler 替换为你的 TypeHandler 全类名
+    Integer register(UserEntity user);
 
-    void register(UserEntity user);
 
     @Select("select id, user_id,username, password, authorities,status from user where username = #{username}")
-
     UserEntity queryUser(String username);
+
+    @Select("select id, user_id,username,status from user where user_id = #{userId}")
+    UserEntity userInfo(Long userId);
 }

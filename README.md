@@ -184,6 +184,19 @@ mvn spring-boot:run -pl server
 ✅ API接口自动扫描完成！
 ```
 
+注册初始用户
+POST http://127.0.0.1:8080/user/register
+Content-Type: application/json
+
+
+{
+"username": "admin",
+"password": "123456"
+
+}
+
+
+
 ## 🔧 配置说明
 
 ### 数据库连接配置

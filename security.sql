@@ -22,34 +22,23 @@
 DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user` (
-  `id` bigint NOT NULL COMMENT 'userID',
-  `username` varchar(255) NOT NULL COMMENT '用户名',
-  `password` varchar(255) NOT NULL COMMENT '密码',
-  `authorities` varchar(512) DEFAULT NULL COMMENT '权限',
-  `status` int DEFAULT NULL COMMENT '账户状态 0 启用 1禁用',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `user_username_id_uindex` (`username`,`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- auto-generated definition
+create table user
+(
+    id          bigint auto_increment comment 'userID'
+        primary key,
+    username    varchar(255)  not null comment '用户名',
+    password    varchar(255)  not null comment '密码',
+    authorities json          null comment '权限',
+    status      int default 0 null comment '账户状态 0 启用 1禁用',
+    user_id     bigint        not null comment 'userid',
+    constraint user_username_id_uindex
+        unique (username, id)
+)
+    charset = utf8mb4;
 
---
--- Dumping data for table `user`
---
+create index user_user_id_index
+    on user (user_id);
 
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (651643242721349,'aaa','{bcrypt}$2a$10$BUExILl34f//EdvKft51MuS9IPCPsY0b9Ug3dW09i7/wbUyFgo/r6','[\"ADMIN\"]',0);
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-07 17:13:57

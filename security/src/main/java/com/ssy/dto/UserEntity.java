@@ -1,6 +1,7 @@
 package com.ssy.dto;
 
 import lombok.Data;
+
 import java.util.Collection;
 
 /**
@@ -12,14 +13,14 @@ import java.util.Collection;
  * @email 3278440884@qq.com
  */
 @Data
-public class UserEntity {
-     private long id;
+public class UserEntity extends com.pojo.entity.UserEntity {
+     private Long id;
      private String username;
      private String password;
      private String email;
      private String phone;
-     private int status;
+     private Integer status;
      private String token;
-     private long userId;
+     private Long userId;
      private Collection<String> authorities;
 }

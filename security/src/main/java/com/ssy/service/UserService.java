@@ -9,7 +9,9 @@
 
 package com.ssy.service;
 
-import com.pojo.entity.UserEntity;
+
+import com.ssy.dto.UserEntity;
+
 import java.util.List;
 
 /**
@@ -56,4 +58,6 @@ public interface UserService {
      * 根据ID获取用户
      */
     UserEntity getUserById(Long userId);
+
+    UserEntity userInfo(Long userId);
 }
