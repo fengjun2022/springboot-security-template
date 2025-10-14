@@ -107,19 +107,19 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
         } catch (TokenExpiredException e) {
             response.setStatus(HttpStatus.NOT_LOGIN);
-            response.getWriter().write(JSON.toJSONString(Result.error(HttpMessage.TOKEN_EXPIRED)));
+            response.getWriter().write(JSON.toJSONString(Result.loginError(HttpMessage.TOKEN_EXPIRED)));
             return;
         } catch (SignatureVerificationException e) {
             response.setStatus(HttpStatus.NOT_LOGIN);
-            response.getWriter().write(JSON.toJSONString(Result.error(HttpMessage.TOKEN_INVALID)));
+            response.getWriter().write(JSON.toJSONString(Result.loginError(HttpMessage.TOKEN_INVALID)));
             return;
         } catch (AlgorithmMismatchException e) {
             response.setStatus(HttpStatus.NOT_LOGIN);
-            response.getWriter().write(JSON.toJSONString(Result.error(HttpMessage.TOKEN_ALGORITHM_MISMATCH)));
+            response.getWriter().write(JSON.toJSONString(Result.loginError(HttpMessage.TOKEN_ALGORITHM_MISMATCH)));
             return;
         } catch (JWTVerificationException e) {
             response.setStatus(HttpStatus.BAD_REQUEST);
-            response.getWriter().write(JSON.toJSONString(Result.error(HttpMessage.BAD_REQUEST + e.getMessage())));
+            response.getWriter().write(JSON.toJSONString(Result.loginError(HttpMessage.BAD_REQUEST + e.getMessage())));
             return;
         }
 

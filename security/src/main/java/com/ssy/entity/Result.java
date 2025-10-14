@@ -37,7 +37,12 @@ public class Result<T> implements Serializable {
         result.msg = HttpMessage.SUCCESS;
         return result;
     }
-
+    public static <T> Result<T> loginError(String msg) {
+        Result result = new Result();
+        result.msg = msg;
+        result.code = HttpStatus.NOT_LOGIN;
+        return result;
+    }
     public static <T> Result<T> error(String msg) {
         Result result = new Result();
         result.msg = msg;
