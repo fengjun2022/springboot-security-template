@@ -110,6 +110,7 @@ CREATE TABLE IF NOT EXISTS api_endpoints (
                                              controller_method VARCHAR(100) NOT NULL COMMENT '控制器方法名',
                                              base_path VARCHAR(200) COMMENT '根路径(类级别RequestMapping)',
                                              description VARCHAR(500) COMMENT '接口描述',
+                                             auth VARCHAR(1000) COMMENT '权限表达式(如@PreAuthorize/@Secured等)',
                                              require_auth TINYINT DEFAULT 1 COMMENT '是否需要认证(0-不需要,1-需要)',
                                              module_group VARCHAR(100) COMMENT '接口分组/模块',
                                              status TINYINT DEFAULT 1 COMMENT '是否启用(0-禁用,1-启用)',
@@ -122,6 +123,11 @@ CREATE TABLE IF NOT EXISTS api_endpoints (
                                              INDEX idx_module_group (module_group) COMMENT '模块分组索引',
                                              INDEX idx_status (status) COMMENT '状态索引'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='API接口信息表';
+
+
+PREPARE stmt_add_api_endpoints_auth FROM @ddl_add_api_endpoints_auth;
+EXECUTE stmt_add_api_endpoints_auth;
+DEALLOCATE PREPARE stmt_add_api_endpoints_auth;
 
 
 

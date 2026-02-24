@@ -20,8 +20,7 @@ public interface UserMapper {
     // 在 #{authorities} 中指定自定义 TypeHandler，告诉 MyBatis 如何转换
     @AutoGenerateSnowflakeId(fieldName = "userId")
     @Insert("INSERT INTO user (id, user_id, username, password, authorities) " +
-            "VALUES (#{id}, #{userId}, #{username}, #{password}, #{authorities, typeHandler=com.ssy.handler.ListTypeHandler})")
-// 注意：com.xxx.ListTypeHandler 替换为你的 TypeHandler 全类名
+            "VALUES (#{id}, #{userId}, #{username}, #{password}, #{authorities, typeHandler=com.ssy.handler.CollectionTypeHandler})")
     Integer register(UserEntity user);
 
 

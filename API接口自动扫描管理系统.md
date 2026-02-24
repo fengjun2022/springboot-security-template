@@ -46,7 +46,7 @@ security/src/main/java/com/ssy/
 └── config/
     └── ApiEndpointScannerConfig.java       # 启动扫描配置
 
-api_endpoints.sql                           # 数据库建表脚本
+security.sql                                # 数据库建表脚本（包含 api_endpoints 表）
 ```
 
 ## 🗄️ 数据库设计
@@ -62,6 +62,7 @@ api_endpoints.sql                           # 数据库建表脚本
 | `controller_method` | VARCHAR(100) | 控制器方法名 | `registerApp` |
 | `base_path` | VARCHAR(200) | 根路径 | `/api/service-app` |
 | `description` | VARCHAR(500) | 接口描述 | `注册服务应用` |
+| `auth` | VARCHAR(1000) | 权限表达式（如`@PreAuthorize`） | `hasRole('ADMIN')` |
 | `require_auth` | TINYINT | 是否需要认证 | 1 |
 | `module_group` | VARCHAR(100) | 模块分组 | `服务管理` |
 | `status` | TINYINT | 启用状态 | 1 |
@@ -225,7 +226,7 @@ POST /api/endpoints/rescan
 ### 1. 数据库初始化
 ```sql
 -- 执行建表脚本
-mysql -u root -p123456 < api_endpoints.sql
+mysql -u root -p123456 < security.sql
 ```
 
 ### 2. 启动应用
