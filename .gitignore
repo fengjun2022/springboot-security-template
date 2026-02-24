@@ -1,4 +1,5 @@
-/server/logs/
-/server/logs/
-/server/target/
 /.idea/
+/logs/
+/server/logs/
+/target/
+**/target/
