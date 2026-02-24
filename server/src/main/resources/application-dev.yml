@@ -1,8 +1,8 @@
 sbt:
   datasource:
-    host: 106.75.7.230
-    port: 2306
-    database: zxy_hospital
+    host: xxx
+    port: 3380
+    database: doc
     username: root
     password: dL0hT8iQ9n
 

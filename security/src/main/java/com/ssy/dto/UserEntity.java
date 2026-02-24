@@ -1,7 +1,6 @@
 package com.ssy.dto;
 
 import lombok.Data;
-
 import java.util.Collection;
 
 /**
@@ -14,7 +13,7 @@ import java.util.Collection;
  */
 @Data
 public class UserEntity extends com.pojo.entity.UserEntity {
-     private Long id;
+     private long id;
      private String username;
      private String password;
      private String email;
