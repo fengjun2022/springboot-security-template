@@ -1,6 +1,6 @@
 sbt:
   datasource:
-    host: xxx
+    host: 47.101.128.4
     port: 3380
     database: doc
     username: root

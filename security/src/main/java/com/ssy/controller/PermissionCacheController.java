@@ -23,7 +23,7 @@ public class PermissionCacheController {
     @Autowired
     private PermissionCacheService permissionCacheService;
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('svc:permission-cache:manage')")
     @PostMapping("/init")
     public Result<Void> initCache() {
         try {
@@ -34,7 +34,7 @@ public class PermissionCacheController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('svc:permission-cache:manage')")
     @PostMapping("/refresh/{appId}")
     public Result<Void> refreshAppPermission(@PathVariable String appId) {
         try {
@@ -45,7 +45,7 @@ public class PermissionCacheController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('svc:permission-cache:manage')")
     @DeleteMapping("/{appId}")
     public Result<Void> removeAppPermission(@PathVariable String appId) {
         try {
@@ -56,12 +56,14 @@ public class PermissionCacheController {
         }
     }
 
+    @PreAuthorize("hasAuthority('svc:permission-cache:read')")
     @GetMapping("/{appId}/permissions")
     public Result<List<String>> getAppPermissions(@PathVariable String appId) {
         List<String> permissions = permissionCacheService.getAppPermissions(appId);
         return Result.success(permissions);
     }
 
+    @PreAuthorize("hasAuthority('svc:permission-cache:read')")
     @GetMapping("/check")
     public Result<Boolean> checkPermission(
             @RequestParam String appId,
@@ -70,7 +72,7 @@ public class PermissionCacheController {
         return Result.success(hasPermission);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('svc:permission-cache:manage')")
     @DeleteMapping("/clear")
     public Result<Void> clearAllCache() {
         try {
@@ -81,6 +83,7 @@ public class PermissionCacheController {
         }
     }
 
+    @PreAuthorize("hasAuthority('svc:permission-cache:read')")
     @GetMapping("/stats")
     public Result<String> getCacheStats() {
         String stats = permissionCacheService.getCacheStats();

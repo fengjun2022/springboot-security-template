@@ -2,12 +2,10 @@ package com.ssy.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.core.Ordered;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.stereotype.Component;
@@ -25,7 +23,7 @@ import java.util.stream.Collectors;
  * 优先处理缺表场景，其次兼容旧版本 api_endpoints 缺少 auth 列的问题。
  */
 @Component
-public class DatabaseSchemaAutoInitializer implements ApplicationRunner, Ordered {
+public class DatabaseSchemaAutoInitializer implements InitializingBean {
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseSchemaAutoInitializer.class);
 
@@ -33,7 +31,16 @@ public class DatabaseSchemaAutoInitializer implements ApplicationRunner, Ordered
             "user",
             "service_apps",
             "service_tokens",
-            "api_endpoints"
+            "api_endpoints",
+            "security_ip_blacklist",
+            "security_ip_whitelist",
+            "security_attack_event",
+            "sys_role",
+            "sys_permission",
+            "sys_permission_endpoint_rel",
+            "sys_user_role",
+            "sys_role_permission",
+            "sys_role_grant_rule"
     );
 
     private final JdbcTemplate jdbcTemplate;
@@ -45,12 +52,7 @@ public class DatabaseSchemaAutoInitializer implements ApplicationRunner, Ordered
     }
 
     @Override
-    public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE;
-    }
-
-    @Override
-    public void run(ApplicationArguments args) {
+    public void afterPropertiesSet() {
         try {
             List<String> missingTables = REQUIRED_TABLES.stream()
                     .filter(table -> !tableExists(table))
@@ -61,11 +63,13 @@ public class DatabaseSchemaAutoInitializer implements ApplicationRunner, Ordered
                 executeSecuritySql();
                 validateRequiredTables();
                 ensureApiEndpointsAuthColumn();
+                ensureApiEndpointsThreatMonitorColumn();
                 log.info("数据库初始化脚本执行完成");
                 return;
             }
 
             ensureApiEndpointsAuthColumn();
+            ensureApiEndpointsThreatMonitorColumn();
         } catch (Exception e) {
             log.error("数据库表结构自动初始化失败", e);
             throw new IllegalStateException("数据库表结构自动初始化失败", e);
@@ -104,6 +108,19 @@ public class DatabaseSchemaAutoInitializer implements ApplicationRunner, Ordered
         jdbcTemplate.execute("ALTER TABLE api_endpoints " +
                 "ADD COLUMN auth VARCHAR(1000) NULL COMMENT '权限表达式(如@PreAuthorize/@Secured等)' AFTER description");
         log.info("已补齐 api_endpoints.auth 列");
+    }
+
+    private void ensureApiEndpointsThreatMonitorColumn() {
+        if (!tableExists("api_endpoints")) {
+            return;
+        }
+        if (columnExists("api_endpoints", "threat_monitor_enabled")) {
+            return;
+        }
+        log.warn("检测到 api_endpoints 表缺少 threat_monitor_enabled 列，自动补齐");
+        jdbcTemplate.execute("ALTER TABLE api_endpoints " +
+                "ADD COLUMN threat_monitor_enabled TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否启用异常识别监控(1启用,0白名单放行)' AFTER auth");
+        log.info("已补齐 api_endpoints.threat_monitor_enabled 列");
     }
 
     private void validateRequiredTables() {

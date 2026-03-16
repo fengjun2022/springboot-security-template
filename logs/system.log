@@ -1,74 +1,540 @@
-2025-09-10 00:00:00.300  INFO 71758 --- [restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=535f3ed8-32cb-3990-b4bf-eea85adb0ed9
-2025-09-10 00:00:00.383  INFO 71758 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'methodSecurityConfig' of type [com.ssy.config.MethodSecurityConfig$$EnhancerBySpringCGLIB$$b30109e7] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2025-09-10 00:00:00.626  INFO 71758 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
-2025-09-10 00:00:00.630  INFO 71758 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-09-10 00:00:00.630  INFO 71758 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.80]
-2025-09-10 00:00:00.681  INFO 71758 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-09-10 00:00:00.681  INFO 71758 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1056 ms
-2025-09-10 00:00:01.464  INFO 71758 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Starting...
-2025-09-10 00:00:02.130  INFO 71758 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Start completed.
-2025-09-10 00:00:02.748  INFO 71758 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint(s) beneath base path '/actuator'
-2025-09-10 00:00:02.878  WARN 71758 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : Unable to start LiveReload server
-2025-09-10 00:00:02.952  WARN 71758 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
-2025-09-10 00:00:03.099  INFO 71758 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@2432b3da, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@437d51e8, org.springframework.security.web.context.SecurityContextPersistenceFilter@4e845fc8, org.springframework.security.web.header.HeaderWriterFilter@4381663, org.springframework.web.filter.CorsFilter@3caa0561, org.springframework.security.web.authentication.logout.LogoutFilter@2eff9235, com.ssy.filter.ServicePermissionFilter@2c82215e, com.ssy.filter.JwtAuthorizationFilter@563281c7, com.ssy.filter.CustomAuthenticationFilter@301bddf9, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@4bac6485, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@e916f4a, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@57c59c86, org.springframework.security.web.session.SessionManagementFilter@37ad4f80, org.springframework.security.web.access.ExceptionTranslationFilter@7dab515, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@6cdb6f0f]
-2025-09-10 00:00:03.131  WARN 71758 --- [restartedMain] s.o.SpringCloudSecurityAutoConfiguration : All Spring Cloud Security modules and starters are deprecated. They will be moved to individual projects in the next major release.
-2025-09-10 00:00:03.197  INFO 71758 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
-2025-09-10 00:00:03.289  INFO 71758 --- [restartedMain] com.main.MainApplication                 : Started MainApplication in 4.866 seconds (JVM running for 5.471)
-2025-09-10 00:00:03.296  INFO 71758 --- [restartedMain] com.ssy.config.ApiEndpointScannerConfig  : 🚀 应用启动完成，开始自动扫描API接口...
-2025-09-10 00:00:03.296  INFO 71758 --- [PermissionCacheInit] c.ssy.config.PermissionCacheInitializer  : 🔄 开始初始化权限缓存... (尝试 1/3)
-2025-09-10 00:00:03.409  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 开始扫描系统中的所有API接口...
-2025-09-10 00:00:03.416  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: ApiEndpointController
-2025-09-10 00:00:03.416  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: ApiEndpointController (Bean: apiEndpointController)
-2025-09-10 00:00:03.417  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller ApiEndpointController 扫描完成，找到 8 个端点
-2025-09-10 00:00:03.417  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: ServiceAppController
-2025-09-10 00:00:03.417  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: ServiceAppController (Bean: serviceAppController)
-2025-09-10 00:00:03.417  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller ServiceAppController 扫描完成，找到 9 个端点
-2025-09-10 00:00:03.417  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: UserController (Bean: userController)
-2025-09-10 00:00:03.417  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller UserController 扫描完成，找到 1 个端点
-2025-09-10 00:00:03.417  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: ServiceTokenController
-2025-09-10 00:00:03.417  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: ServiceTokenController (Bean: serviceTokenController)
-2025-09-10 00:00:03.417  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller ServiceTokenController 扫描完成，找到 6 个端点
-2025-09-10 00:00:03.417  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: OpenApiControllerWebMvc (Bean: openApiControllerWebMvc)
-2025-09-10 00:00:03.417  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller OpenApiControllerWebMvc 扫描完成，找到 0 个端点
-2025-09-10 00:00:03.417  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: NoBasepathController (Bean: noBasepathController)
-2025-09-10 00:00:03.417  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller NoBasepathController 扫描完成，找到 1 个端点
-2025-09-10 00:00:03.418  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: test
-2025-09-10 00:00:03.418  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: test (Bean: test)
-2025-09-10 00:00:03.418  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller test 扫描完成，找到 3 个端点
-2025-09-10 00:00:03.418  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: ApiResourceController (Bean: apiResourceController)
-2025-09-10 00:00:03.418  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller ApiResourceController 扫描完成，找到 2 个端点
-2025-09-10 00:00:03.418  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: Swagger2ControllerWebMvc (Bean: swagger2ControllerWebMvc)
-2025-09-10 00:00:03.418  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller Swagger2ControllerWebMvc 扫描完成，找到 0 个端点
-2025-09-10 00:00:03.419  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: BasicErrorController (Bean: basicErrorController)
-2025-09-10 00:00:03.419  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller BasicErrorController 扫描完成，找到 0 个端点
-2025-09-10 00:00:03.419  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: TestApiController (Bean: testApiController)
-2025-09-10 00:00:03.419  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller TestApiController 扫描完成，找到 4 个端点
-2025-09-10 00:00:03.419  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: PermissionCacheController
-2025-09-10 00:00:03.419  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: PermissionCacheController (Bean: permissionCacheController)
-2025-09-10 00:00:03.419  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller PermissionCacheController 扫描完成，找到 7 个端点
-2025-09-10 00:00:03.575  INFO 71758 --- [RMI TCP Connection(4)-127.0.0.1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-09-10 00:00:03.576  INFO 71758 --- [RMI TCP Connection(4)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-09-10 00:00:03.578  INFO 71758 --- [RMI TCP Connection(4)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
-2025-09-10 00:00:05.405  INFO 71758 --- [PermissionCacheInit] c.ssy.config.PermissionCacheInitializer  : ✅ 权限缓存初始化成功
-2025-09-10 00:00:10.268  INFO 71758 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : API接口扫描完成，共扫描到 41 个接口，新增 0 个
-2025-09-10 00:00:10.375  INFO 71758 --- [restartedMain] com.ssy.config.ApiEndpointScannerConfig  : ✅ API接口自动扫描完成！
-2025-09-10 00:00:10.376  INFO 71758 --- [restartedMain] com.ssy.config.ApiEndpointScannerConfig  : 📊 扫描结果：新增 0 个接口，耗时 7078 ms
-2025-09-10 00:02:34.390  INFO 71758 --- [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 91 class path changes (0 additions, 91 deletions, 0 modifications)
-2025-09-10 00:02:35.407  WARN 71758 --- [Thread-1] org.apache.tomcat.util.net.NioEndpoint   : Failed to unlock acceptor for [http-nio-8080] because the local address was not available
-2025-09-10 00:02:35.408  INFO 71758 --- [Thread-1] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
-2025-09-10 00:02:35.411  INFO 71758 --- [Thread-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Destroying Spring FrameworkServlet 'dispatcherServlet'
-2025-09-10 00:02:35.412 ERROR 71758 --- [http-nio-8080-Acceptor] org.apache.tomcat.util.net.Acceptor      : Socket accept failed
+2026-03-16 14:43:27.432  INFO 47343 --- [restartedMain] com.main.MainApplication                 : Starting MainApplication using Java 11.0.27 on fengjun.local with PID 47343 (/Users/fengjun/Desktop/prejoct/doc-admin/doc-admin/server/target/classes started by fengjun in /Users/fengjun/Desktop/prejoct/doc-admin/doc-admin)
+2026-03-16 14:43:27.433  INFO 47343 --- [restartedMain] com.main.MainApplication                 : The following 1 profile is active: "dev"
+2026-03-16 14:43:27.457  INFO 47343 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-03-16 14:43:27.457  INFO 47343 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-03-16 14:43:28.139  INFO 47343 --- [restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=3e7b5050-7eae-30ae-af5f-7845a568cb52
+2026-03-16 14:43:28.212  INFO 47343 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'methodSecurityConfig' of type [com.ssy.config.MethodSecurityConfig$$EnhancerBySpringCGLIB$$76560d64] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-03-16 14:43:28.445  INFO 47343 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-16 14:43:28.449  INFO 47343 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-16 14:43:28.449  INFO 47343 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.80]
+2026-03-16 14:43:28.497  INFO 47343 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-03-16 14:43:28.497  INFO 47343 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1040 ms
+2026-03-16 14:43:29.281  INFO 47343 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Starting...
+2026-03-16 14:43:30.447 ERROR 47343 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : DatebookHikariCP - Exception during pool initialization.
 
-java.nio.channels.AsynchronousCloseException: null
-	at java.base/java.nio.channels.spi.AbstractInterruptibleChannel.end(AbstractInterruptibleChannel.java:202) ~[na:na]
-	at java.base/sun.nio.ch.ServerSocketChannelImpl.end(ServerSocketChannelImpl.java:269) ~[na:na]
-	at java.base/sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:288) ~[na:na]
-	at org.apache.tomcat.util.net.NioEndpoint.serverSocketAccept(NioEndpoint.java:548) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
-	at org.apache.tomcat.util.net.NioEndpoint.serverSocketAccept(NioEndpoint.java:79) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
-	at org.apache.tomcat.util.net.Acceptor.run(Acceptor.java:129) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
-	at java.base/java.lang.Thread.run(Thread.java:829) ~[na:na]
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
 
-2025-09-10 00:02:35.427  WARN 71758 --- [Thread-1] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [DatebookHikariCP housekeeper] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:175) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:825) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:446) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:239) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:188) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:364) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:206) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:476) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:561) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:115) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112) ~[HikariCP-4.0.3.jar:na]
+	at org.springframework.jdbc.datasource.DataSourceUtils.fetchConnection(DataSourceUtils.java:160) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.datasource.DataSourceUtils.doGetConnection(DataSourceUtils.java:118) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:81) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:645) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:715) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:746) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:759) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.core.JdbcTemplate.queryForObject(JdbcTemplate.java:881) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.core.JdbcTemplate.queryForObject(JdbcTemplate.java:908) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at com.ssy.config.DatabaseSchemaAutoInitializer.tableExists(DatabaseSchemaAutoInitializer.java:80) ~[classes/:na]
+	at com.ssy.config.DatabaseSchemaAutoInitializer.lambda$afterPropertiesSet$0(DatabaseSchemaAutoInitializer.java:58) ~[classes/:na]
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:176) ~[na:na]
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:948) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474) ~[na:na]
+	at java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234) ~[na:na]
+	at java.base/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:578) ~[na:na]
+	at com.ssy.config.DatabaseSchemaAutoInitializer.afterPropertiesSet(DatabaseSchemaAutoInitializer.java:59) ~[classes/:na]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1863) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1800) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:276) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1391) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1311) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:710) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:693) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:119) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:408) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1431) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:619) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:213) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.getOrderedBeansOfType(ServletContextInitializerBeans.java:213) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:176) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:171) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAdaptableBeans(ServletContextInitializerBeans.java:156) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.<init>(ServletContextInitializerBeans.java:87) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.getServletContextInitializerBeans(ServletWebServerApplicationContext.java:262) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.selfInitialize(ServletWebServerApplicationContext.java:236) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.embedded.tomcat.TomcatStarter.onStartup(TomcatStarter.java:53) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4904) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1332) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1322) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:140) ~[na:na]
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:866) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:795) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1332) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1322) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:140) ~[na:na]
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:866) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:249) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:433) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:922) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.startup.Tomcat.start(Tomcat.java:486) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:123) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.<init>(TomcatWebServer.java:104) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getTomcatWebServer(TomcatServletWebServerFactory.java:481) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:211) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:184) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:162) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:577) ~[spring-context-5.3.30.jar:5.3.30]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:731) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:408) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:307) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1303) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1292) ~[spring-boot-2.7.16.jar:2.7.16]
+	at com.main.MainApplication.main(MainApplication.java:27) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50) ~[spring-boot-devtools-2.7.16.jar:2.7.16]
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:490) ~[na:na]
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:62) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:105) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:150) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:166) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.NativeProtocol.readMessage(NativeProtocol.java:582) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.NativeProtocol.readServerCapabilities(NativeProtocol.java:537) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.NativeProtocol.beforeHandshake(NativeProtocol.java:424) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.NativeProtocol.connect(NativeProtocol.java:1428) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:134) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:945) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	... 103 common frames omitted
+Caused by: java.io.EOFException: Can not read response from server. Expected to read 4 bytes, read 0 bytes before connection was unexpectedly lost.
+	at com.mysql.cj.protocol.FullReadInputStream.readFully(FullReadInputStream.java:67) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.SimplePacketReader.readHeaderLocal(SimplePacketReader.java:81) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.SimplePacketReader.readHeader(SimplePacketReader.java:63) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.SimplePacketReader.readHeader(SimplePacketReader.java:45) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.NativeProtocol.readMessage(NativeProtocol.java:576) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	... 109 common frames omitted
+
+2026-03-16 14:43:30.452 ERROR 47343 --- [restartedMain] c.s.c.DatabaseSchemaAutoInitializer      : 数据库表结构自动初始化失败
+
+org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:84) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:645) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:715) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:746) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:759) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.core.JdbcTemplate.queryForObject(JdbcTemplate.java:881) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.core.JdbcTemplate.queryForObject(JdbcTemplate.java:908) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at com.ssy.config.DatabaseSchemaAutoInitializer.tableExists(DatabaseSchemaAutoInitializer.java:80) ~[classes/:na]
+	at com.ssy.config.DatabaseSchemaAutoInitializer.lambda$afterPropertiesSet$0(DatabaseSchemaAutoInitializer.java:58) ~[classes/:na]
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:176) ~[na:na]
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:948) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474) ~[na:na]
+	at java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234) ~[na:na]
+	at java.base/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:578) ~[na:na]
+	at com.ssy.config.DatabaseSchemaAutoInitializer.afterPropertiesSet(DatabaseSchemaAutoInitializer.java:59) ~[classes/:na]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1863) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1800) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:276) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1391) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1311) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:710) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:693) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:119) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:408) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1431) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:619) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:213) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.getOrderedBeansOfType(ServletContextInitializerBeans.java:213) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:176) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:171) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAdaptableBeans(ServletContextInitializerBeans.java:156) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.<init>(ServletContextInitializerBeans.java:87) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.getServletContextInitializerBeans(ServletWebServerApplicationContext.java:262) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.selfInitialize(ServletWebServerApplicationContext.java:236) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.embedded.tomcat.TomcatStarter.onStartup(TomcatStarter.java:53) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4904) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1332) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1322) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:140) ~[na:na]
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:866) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:795) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1332) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1322) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:140) ~[na:na]
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:866) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:249) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:433) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:922) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.startup.Tomcat.start(Tomcat.java:486) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:123) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.<init>(TomcatWebServer.java:104) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getTomcatWebServer(TomcatServletWebServerFactory.java:481) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:211) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:184) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:162) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:577) ~[spring-context-5.3.30.jar:5.3.30]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:731) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:408) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:307) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1303) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1292) ~[spring-boot-2.7.16.jar:2.7.16]
+	at com.main.MainApplication.main(MainApplication.java:27) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50) ~[spring-boot-devtools-2.7.16.jar:2.7.16]
+Caused by: com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:175) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:825) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:446) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:239) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:188) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:364) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:206) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:476) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:561) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:115) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112) ~[HikariCP-4.0.3.jar:na]
+	at org.springframework.jdbc.datasource.DataSourceUtils.fetchConnection(DataSourceUtils.java:160) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.datasource.DataSourceUtils.doGetConnection(DataSourceUtils.java:118) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:81) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	... 90 common frames omitted
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:490) ~[na:na]
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:62) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:105) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:150) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:166) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.NativeProtocol.readMessage(NativeProtocol.java:582) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.NativeProtocol.readServerCapabilities(NativeProtocol.java:537) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.NativeProtocol.beforeHandshake(NativeProtocol.java:424) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.NativeProtocol.connect(NativeProtocol.java:1428) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:134) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:945) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	... 103 common frames omitted
+Caused by: java.io.EOFException: Can not read response from server. Expected to read 4 bytes, read 0 bytes before connection was unexpectedly lost.
+	at com.mysql.cj.protocol.FullReadInputStream.readFully(FullReadInputStream.java:67) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.SimplePacketReader.readHeaderLocal(SimplePacketReader.java:81) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.SimplePacketReader.readHeader(SimplePacketReader.java:63) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.SimplePacketReader.readHeader(SimplePacketReader.java:45) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.NativeProtocol.readMessage(NativeProtocol.java:576) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	... 109 common frames omitted
+
+2026-03-16 14:43:30.459 ERROR 47343 --- [restartedMain] o.s.b.web.embedded.tomcat.TomcatStarter  : Error starting Tomcat context. Exception: org.springframework.beans.factory.UnsatisfiedDependencyException. Message: Error creating bean with name 'servicePermissionFilter': Unsatisfied dependency expressed through field 'permissionCacheService'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'databaseSchemaAutoInitializer' defined in file [/Users/fengjun/Desktop/prejoct/doc-admin/doc-admin/security/target/classes/com/ssy/config/DatabaseSchemaAutoInitializer.class]: Invocation of init method failed; nested exception is java.lang.IllegalStateException: 数据库表结构自动初始化失败
+2026-03-16 14:43:30.486  INFO 47343 --- [restartedMain] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-03-16 14:43:30.495  WARN 47343 --- [restartedMain] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Unable to start web server; nested exception is org.springframework.boot.web.server.WebServerException: Unable to start embedded Tomcat
+2026-03-16 14:43:30.508  INFO 47343 --- [restartedMain] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2026-03-16 14:43:30.526 ERROR 47343 --- [restartedMain] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.context.ApplicationContextException: Unable to start web server; nested exception is org.springframework.boot.web.server.WebServerException: Unable to start embedded Tomcat
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:165) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:577) ~[spring-context-5.3.30.jar:5.3.30]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:731) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:408) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:307) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1303) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1292) ~[spring-boot-2.7.16.jar:2.7.16]
+	at com.main.MainApplication.main(MainApplication.java:27) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50) ~[spring-boot-devtools-2.7.16.jar:2.7.16]
+Caused by: org.springframework.boot.web.server.WebServerException: Unable to start embedded Tomcat
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:142) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.<init>(TomcatWebServer.java:104) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getTomcatWebServer(TomcatServletWebServerFactory.java:481) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:211) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:184) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:162) ~[spring-boot-2.7.16.jar:2.7.16]
+	... 13 common frames omitted
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'servicePermissionFilter': Unsatisfied dependency expressed through field 'permissionCacheService'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'databaseSchemaAutoInitializer' defined in file [/Users/fengjun/Desktop/prejoct/doc-admin/doc-admin/security/target/classes/com/ssy/config/DatabaseSchemaAutoInitializer.class]: Invocation of init method failed; nested exception is java.lang.IllegalStateException: 数据库表结构自动初始化失败
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:713) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:693) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:119) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:408) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1431) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:619) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:213) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.getOrderedBeansOfType(ServletContextInitializerBeans.java:213) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:176) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:171) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAdaptableBeans(ServletContextInitializerBeans.java:156) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.<init>(ServletContextInitializerBeans.java:87) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.getServletContextInitializerBeans(ServletWebServerApplicationContext.java:262) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.selfInitialize(ServletWebServerApplicationContext.java:236) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.web.embedded.tomcat.TomcatStarter.onStartup(TomcatStarter.java:53) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4904) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1332) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1322) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:140) ~[na:na]
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:866) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:795) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1332) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1322) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:140) ~[na:na]
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:866) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:249) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:433) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:922) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.apache.catalina.startup.Tomcat.start(Tomcat.java:486) ~[tomcat-embed-core-9.0.80.jar:9.0.80]
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:123) ~[spring-boot-2.7.16.jar:2.7.16]
+	... 18 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'databaseSchemaAutoInitializer' defined in file [/Users/fengjun/Desktop/prejoct/doc-admin/doc-admin/security/target/classes/com/ssy/config/DatabaseSchemaAutoInitializer.class]: Invocation of init method failed; nested exception is java.lang.IllegalStateException: 数据库表结构自动初始化失败
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1804) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:276) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1391) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1311) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:710) ~[spring-beans-5.3.30.jar:5.3.30]
+	... 60 common frames omitted
+Caused by: java.lang.IllegalStateException: 数据库表结构自动初始化失败
+	at com.ssy.config.DatabaseSchemaAutoInitializer.afterPropertiesSet(DatabaseSchemaAutoInitializer.java:75) ~[classes/:na]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1863) ~[spring-beans-5.3.30.jar:5.3.30]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1800) ~[spring-beans-5.3.30.jar:5.3.30]
+	... 72 common frames omitted
+Caused by: org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:84) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:645) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:715) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:746) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:759) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.core.JdbcTemplate.queryForObject(JdbcTemplate.java:881) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.core.JdbcTemplate.queryForObject(JdbcTemplate.java:908) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at com.ssy.config.DatabaseSchemaAutoInitializer.tableExists(DatabaseSchemaAutoInitializer.java:80) ~[classes/:na]
+	at com.ssy.config.DatabaseSchemaAutoInitializer.lambda$afterPropertiesSet$0(DatabaseSchemaAutoInitializer.java:58) ~[classes/:na]
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:176) ~[na:na]
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:948) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474) ~[na:na]
+	at java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234) ~[na:na]
+	at java.base/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:578) ~[na:na]
+	at com.ssy.config.DatabaseSchemaAutoInitializer.afterPropertiesSet(DatabaseSchemaAutoInitializer.java:59) ~[classes/:na]
+	... 74 common frames omitted
+Caused by: com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:175) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:825) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:446) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:239) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:188) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:364) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:206) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:476) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:561) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:115) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112) ~[HikariCP-4.0.3.jar:na]
+	at org.springframework.jdbc.datasource.DataSourceUtils.fetchConnection(DataSourceUtils.java:160) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.datasource.DataSourceUtils.doGetConnection(DataSourceUtils.java:118) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:81) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	... 90 common frames omitted
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:490) ~[na:na]
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:62) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:105) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:150) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:166) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.NativeProtocol.readMessage(NativeProtocol.java:582) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.NativeProtocol.readServerCapabilities(NativeProtocol.java:537) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.NativeProtocol.beforeHandshake(NativeProtocol.java:424) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.NativeProtocol.connect(NativeProtocol.java:1428) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:134) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:945) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	... 103 common frames omitted
+Caused by: java.io.EOFException: Can not read response from server. Expected to read 4 bytes, read 0 bytes before connection was unexpectedly lost.
+	at com.mysql.cj.protocol.FullReadInputStream.readFully(FullReadInputStream.java:67) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.SimplePacketReader.readHeaderLocal(SimplePacketReader.java:81) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.SimplePacketReader.readHeader(SimplePacketReader.java:63) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.SimplePacketReader.readHeader(SimplePacketReader.java:45) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.protocol.a.NativeProtocol.readMessage(NativeProtocol.java:576) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	... 109 common frames omitted
+
+2026-03-16 14:45:04.662  INFO 48870 --- [restartedMain] com.main.MainApplication                 : Starting MainApplication using Java 11.0.27 on fengjun.local with PID 48870 (/Users/fengjun/Desktop/prejoct/doc-admin/doc-admin/server/target/classes started by fengjun in /Users/fengjun/Desktop/prejoct/doc-admin/doc-admin)
+2026-03-16 14:45:04.663  INFO 48870 --- [restartedMain] com.main.MainApplication                 : The following 1 profile is active: "dev"
+2026-03-16 14:45:04.682  INFO 48870 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-03-16 14:45:04.682  INFO 48870 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-03-16 14:45:05.307  INFO 48870 --- [restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=3e7b5050-7eae-30ae-af5f-7845a568cb52
+2026-03-16 14:45:05.392  INFO 48870 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'methodSecurityConfig' of type [com.ssy.config.MethodSecurityConfig$$EnhancerBySpringCGLIB$$86b751a6] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-03-16 14:45:05.625  INFO 48870 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-16 14:45:05.629  INFO 48870 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-16 14:45:05.629  INFO 48870 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.80]
+2026-03-16 14:45:05.674  INFO 48870 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-03-16 14:45:05.674  INFO 48870 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 992 ms
+2026-03-16 14:45:06.445  INFO 48870 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Starting...
+2026-03-16 14:45:07.040  INFO 48870 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Start completed.
+2026-03-16 14:45:08.923  INFO 48870 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-03-16 14:45:09.031  INFO 48870 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2026-03-16 14:45:09.090  WARN 48870 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2026-03-16 14:45:09.217  INFO 48870 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@7801d1cf, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3ddbb256, org.springframework.security.web.context.SecurityContextPersistenceFilter@7ffd33e3, org.springframework.security.web.header.HeaderWriterFilter@313713ca, org.springframework.web.filter.CorsFilter@f5a8dcf, org.springframework.security.web.authentication.logout.LogoutFilter@2f0a0463, com.ssy.filter.ThreatDetectionFilter@767d19b1, com.ssy.filter.ServicePermissionFilter@3208574f, com.ssy.filter.JwtAuthorizationFilter@2f56bb17, com.ssy.filter.CustomAuthenticationFilter@5c37c2ce, com.ssy.filter.RequestUserContextFilter@4652eb15, com.ssy.filter.EndpointRbacAuthorizationFilter@6c490c22, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@12e052ef, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@8fc5106, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1e51804a, org.springframework.security.web.session.SessionManagementFilter@518b4db6, org.springframework.security.web.access.ExceptionTranslationFilter@4b9fb089, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@9495b4e]
+2026-03-16 14:45:10.253  INFO 48870 --- [restartedMain] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-03-16 14:45:10.277  WARN 48870 --- [restartedMain] s.o.SpringCloudSecurityAutoConfiguration : All Spring Cloud Security modules and starters are deprecated. They will be moved to individual projects in the next major release.
+2026-03-16 14:45:10.371  INFO 48870 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2026-03-16 14:45:11.378  INFO 48870 --- [restartedMain] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-03-16 14:45:11.500  INFO 48870 --- [restartedMain] com.main.MainApplication                 : Started MainApplication in 8.03 seconds (JVM running for 8.492)
+2026-03-16 14:45:11.506  INFO 48870 --- [restartedMain] com.ssy.config.ApiEndpointScannerConfig  : 🚀 应用启动完成，开始自动扫描API接口...
+2026-03-16 14:45:11.506  INFO 48870 --- [PermissionCacheInit] c.ssy.config.PermissionCacheInitializer  : 🔄 开始初始化权限缓存... (尝试 1/3)
+2026-03-16 14:45:11.648  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 开始扫描系统中的所有API接口...
+2026-03-16 14:45:11.657  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: OpenApiControllerWebMvc (Bean: openApiControllerWebMvc)
+2026-03-16 14:45:11.658  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller OpenApiControllerWebMvc 扫描完成，找到 0 个端点
+2026-03-16 14:45:11.658  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: test
+2026-03-16 14:45:11.658  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: test (Bean: test)
+2026-03-16 14:45:11.658  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller test 扫描完成，找到 3 个端点
+2026-03-16 14:45:11.659  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: ApiResourceController (Bean: apiResourceController)
+2026-03-16 14:45:11.659  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller ApiResourceController 扫描完成，找到 2 个端点
+2026-03-16 14:45:11.659  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: RbacAdminController
+2026-03-16 14:45:11.659  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: RbacAdminController (Bean: rbacAdminController)
+2026-03-16 14:45:11.659  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller RbacAdminController 扫描完成，找到 20 个端点
+2026-03-16 14:45:11.659  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: TestApiController (Bean: testApiController)
+2026-03-16 14:45:11.659  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller TestApiController 扫描完成，找到 4 个端点
+2026-03-16 14:45:11.659  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: PermissionCacheController
+2026-03-16 14:45:11.660  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: PermissionCacheController (Bean: permissionCacheController)
+2026-03-16 14:45:11.660  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller PermissionCacheController 扫描完成，找到 7 个端点
+2026-03-16 14:45:11.660  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: ApiEndpointController
+2026-03-16 14:45:11.660  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: ApiEndpointController (Bean: apiEndpointController)
+2026-03-16 14:45:11.660  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller ApiEndpointController 扫描完成，找到 8 个端点
+2026-03-16 14:45:11.660  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: ServiceAppController
+2026-03-16 14:45:11.660  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: ServiceAppController (Bean: serviceAppController)
+2026-03-16 14:45:11.660  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller ServiceAppController 扫描完成，找到 9 个端点
+2026-03-16 14:45:11.660  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: UserController (Bean: userController)
+2026-03-16 14:45:11.660  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller UserController 扫描完成，找到 2 个端点
+2026-03-16 14:45:11.660  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: ServiceTokenController
+2026-03-16 14:45:11.660  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: ServiceTokenController (Bean: serviceTokenController)
+2026-03-16 14:45:11.660  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller ServiceTokenController 扫描完成，找到 6 个端点
+2026-03-16 14:45:11.661  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: NoBasepathController (Bean: noBasepathController)
+2026-03-16 14:45:11.661  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller NoBasepathController 扫描完成，找到 1 个端点
+2026-03-16 14:45:11.661  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: ThreatDetectionAdminController
+2026-03-16 14:45:11.661  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: ThreatDetectionAdminController (Bean: threatDetectionAdminController)
+2026-03-16 14:45:11.661  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller ThreatDetectionAdminController 扫描完成，找到 11 个端点
+2026-03-16 14:45:11.661  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: Swagger2ControllerWebMvc (Bean: swagger2ControllerWebMvc)
+2026-03-16 14:45:11.662  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller Swagger2ControllerWebMvc 扫描完成，找到 0 个端点
+2026-03-16 14:45:11.662  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: BasicErrorController (Bean: basicErrorController)
+2026-03-16 14:45:11.662  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller BasicErrorController 扫描完成，找到 0 个端点
+2026-03-16 14:45:11.663  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: AuthAccountController (Bean: authAccountController)
+2026-03-16 14:45:11.663  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller AuthAccountController 扫描完成，找到 1 个端点
+2026-03-16 14:45:12.061  INFO 48870 --- [RMI TCP Connection(3)-127.0.0.1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-16 14:45:12.062  INFO 48870 --- [RMI TCP Connection(3)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-16 14:45:12.063  INFO 48870 --- [RMI TCP Connection(3)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-03-16 14:45:13.633  INFO 48870 --- [PermissionCacheInit] c.ssy.config.PermissionCacheInitializer  : ✅ 权限缓存初始化成功
+2026-03-16 14:45:28.203  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : API接口扫描完成，共扫描到 74 个接口，新增 0 个
+2026-03-16 14:45:28.373  INFO 48870 --- [restartedMain] c.s.s.impl.EndpointThreatCacheService    : 异常识别接口缓存已刷新: total=74, exact=49, pattern=25, cost=168ms
+2026-03-16 14:45:28.455  INFO 48870 --- [restartedMain] c.s.s.impl.EndpointRbacCacheService      : 接口RBAC缓存已刷新: total=74, protected=61, permissionBound=0, exact=49, pattern=25, cost=81ms
+2026-03-16 14:45:28.847  INFO 48870 --- [restartedMain] com.ssy.config.ApiEndpointScannerConfig  : ✅ API接口自动扫描完成！
+2026-03-16 14:45:28.848  INFO 48870 --- [restartedMain] com.ssy.config.ApiEndpointScannerConfig  : 📊 扫描结果：新增 0 个接口，耗时 17340 ms
+2026-03-16 14:45:28.974  INFO 48870 --- [restartedMain] c.s.s.impl.EndpointThreatCacheService    : 异常识别接口缓存已刷新: total=74, exact=49, pattern=25, cost=126ms
+2026-03-16 14:45:29.073  INFO 48870 --- [restartedMain] c.s.service.impl.IpAccessControlService  : IP黑白名单缓存已刷新: blacklist=0, whitelist=0
+2026-03-16 14:45:29.076  INFO 48870 --- [restartedMain] c.s.c.ThreatDetectionCacheInitializer    : 异常识别缓存初始化完成: endpointCacheSize=74, blacklistSize=0, whitelistSize=0, cost=228ms
+2026-03-16 14:45:29.228  INFO 48870 --- [restartedMain] c.s.s.impl.EndpointRbacCacheService      : 接口RBAC缓存已刷新: total=74, protected=61, permissionBound=0, exact=49, pattern=25, cost=152ms
+2026-03-16 14:45:29.228  INFO 48870 --- [restartedMain] c.s.config.EndpointRbacCacheInitializer  : 接口RBAC缓存初始化完成: size=74, cost=152ms
+2026-03-16 16:38:53.496  INFO 48870 --- [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 126 class path changes (0 additions, 126 deletions, 0 modifications)
+2026-03-16 16:38:53.756  INFO 48870 --- [Thread-5] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-03-16 16:38:53.769  INFO 48870 --- [Thread-5] o.a.c.c.C.[Tomcat].[localhost].[/]       : Destroying Spring FrameworkServlet 'dispatcherServlet'
+2026-03-16 16:38:53.800  WARN 48870 --- [Thread-5] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [DatebookHikariCP housekeeper] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
  java.base@11.0.27/jdk.internal.misc.Unsafe.park(Native Method)
  java.base@11.0.27/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:234)
  java.base@11.0.27/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2123)
@@ -78,5 +544,321 @@ java.nio.channels.AsynchronousCloseException: null
  java.base@11.0.27/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1114)
  java.base@11.0.27/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
  java.base@11.0.27/java.lang.Thread.run(Thread.java:829)
-2025-09-10 00:02:35.445  INFO 71758 --- [Thread-1] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Shutdown initiated...
-2025-09-10 00:02:35.454  INFO 71758 --- [Thread-1] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Shutdown completed.
+2026-03-16 16:38:53.879  INFO 48870 --- [Thread-5] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Shutdown initiated...
+2026-03-16 16:38:53.887  INFO 48870 --- [Thread-5] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Shutdown completed.
+2026-03-16 16:38:55.413  INFO 48870 --- [restartedMain] com.main.MainApplication                 : Starting MainApplication using Java 11.0.27 on fengjun.local with PID 48870 (/Users/fengjun/Desktop/prejoct/doc-admin/doc-admin/server/target/classes started by fengjun in /Users/fengjun/Desktop/prejoct/doc-admin/doc-admin)
+2026-03-16 16:38:55.413  INFO 48870 --- [restartedMain] com.main.MainApplication                 : The following 1 profile is active: "dev"
+2026-03-16 16:38:55.774  INFO 48870 --- [restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=3e7b5050-7eae-30ae-af5f-7845a568cb52
+2026-03-16 16:38:55.819  INFO 48870 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'methodSecurityConfig' of type [com.ssy.config.MethodSecurityConfig$$EnhancerBySpringCGLIB$$86b751a6] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-03-16 16:38:55.918  INFO 48870 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-16 16:38:55.919  INFO 48870 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-16 16:38:55.919  INFO 48870 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.80]
+2026-03-16 16:38:55.939  INFO 48870 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-03-16 16:38:55.939  INFO 48870 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 523 ms
+2026-03-16 16:38:56.620  INFO 48870 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Starting...
+2026-03-16 16:38:57.147  INFO 48870 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Start completed.
+2026-03-16 16:38:58.210  INFO 48870 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-03-16 16:38:58.293  INFO 48870 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2026-03-16 16:38:58.335  WARN 48870 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2026-03-16 16:38:58.392  INFO 48870 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@46d1bf73, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@35b8679, org.springframework.security.web.context.SecurityContextPersistenceFilter@44cde828, org.springframework.security.web.header.HeaderWriterFilter@5b20d15, org.springframework.web.filter.CorsFilter@39949603, org.springframework.security.web.authentication.logout.LogoutFilter@6b293f0, com.ssy.filter.ThreatDetectionFilter@1d7c998, com.ssy.filter.ServicePermissionFilter@2d3105aa, com.ssy.filter.JwtAuthorizationFilter@353f596b, com.ssy.filter.CustomAuthenticationFilter@7de2a04f, com.ssy.filter.RequestUserContextFilter@14ba5f9e, com.ssy.filter.EndpointRbacAuthorizationFilter@57b59998, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6851a57e, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7d9ec7c4, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@551d1051, org.springframework.security.web.session.SessionManagementFilter@6cd79194, org.springframework.security.web.access.ExceptionTranslationFilter@411da5ba, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@46c54404]
+2026-03-16 16:38:59.412  INFO 48870 --- [restartedMain] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-03-16 16:38:59.429  WARN 48870 --- [restartedMain] s.o.SpringCloudSecurityAutoConfiguration : All Spring Cloud Security modules and starters are deprecated. They will be moved to individual projects in the next major release.
+2026-03-16 16:38:59.465  INFO 48870 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2026-03-16 16:38:59.841  INFO 48870 --- [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 157 class path changes (126 additions, 0 deletions, 31 modifications)
+2026-03-16 16:39:00.471  INFO 48870 --- [restartedMain] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-03-16 16:39:00.511  INFO 48870 --- [restartedMain] com.main.MainApplication                 : Started MainApplication in 6.211 seconds (JVM running for 6837.363)
+2026-03-16 16:39:00.513  INFO 48870 --- [restartedMain] com.ssy.config.ApiEndpointScannerConfig  : 🚀 应用启动完成，开始自动扫描API接口...
+2026-03-16 16:39:00.513  INFO 48870 --- [PermissionCacheInit] c.ssy.config.PermissionCacheInitializer  : 🔄 开始初始化权限缓存... (尝试 1/3)
+2026-03-16 16:39:00.514  INFO 48870 --- [Thread-9] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-03-16 16:39:00.517  WARN 48870 --- [Thread-9] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [DatebookHikariCP housekeeper] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@11.0.27/jdk.internal.misc.Unsafe.park(Native Method)
+ java.base@11.0.27/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:234)
+ java.base@11.0.27/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2123)
+ java.base@11.0.27/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1182)
+ java.base@11.0.27/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:899)
+ java.base@11.0.27/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1054)
+ java.base@11.0.27/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1114)
+ java.base@11.0.27/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+ java.base@11.0.27/java.lang.Thread.run(Thread.java:829)
+2026-03-16 16:39:00.517  WARN 48870 --- [Thread-9] o.a.c.loader.WebappClassLoaderBase       : The web application [ROOT] appears to have started a thread named [DatebookHikariCP connection adder] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@11.0.27/jdk.internal.misc.Unsafe.park(Native Method)
+ java.base@11.0.27/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:234)
+ java.base@11.0.27/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2123)
+ java.base@11.0.27/java.util.concurrent.LinkedBlockingQueue.poll(LinkedBlockingQueue.java:458)
+ java.base@11.0.27/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1053)
+ java.base@11.0.27/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1114)
+ java.base@11.0.27/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+ java.base@11.0.27/java.lang.Thread.run(Thread.java:829)
+2026-03-16 16:39:00.522  INFO 48870 --- [Thread-9] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Shutdown initiated...
+2026-03-16 16:39:00.526  INFO 48870 --- [Thread-9] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Shutdown completed.
+2026-03-16 16:39:00.558  WARN 48870 --- [scheduling-1] com.zaxxer.hikari.pool.PoolBase          : DatebookHikariCP - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@79e8586e (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-03-16 16:39:00.558  WARN 48870 --- [restartedMain] com.zaxxer.hikari.pool.PoolBase          : DatebookHikariCP - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@3f197d1d (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-03-16 16:39:01.611  INFO 48870 --- [restartedMain] com.main.MainApplication                 : Starting MainApplication using Java 11.0.27 on fengjun.local with PID 48870 (/Users/fengjun/Desktop/prejoct/doc-admin/doc-admin/server/target/classes started by fengjun in /Users/fengjun/Desktop/prejoct/doc-admin/doc-admin)
+2026-03-16 16:39:01.611  INFO 48870 --- [restartedMain] com.main.MainApplication                 : The following 1 profile is active: "dev"
+2026-03-16 16:39:01.893  INFO 48870 --- [restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=3e7b5050-7eae-30ae-af5f-7845a568cb52
+2026-03-16 16:39:01.922  INFO 48870 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'methodSecurityConfig' of type [com.ssy.config.MethodSecurityConfig$$EnhancerBySpringCGLIB$$86b751a6] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-03-16 16:39:01.967  INFO 48870 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-16 16:39:01.968  INFO 48870 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-16 16:39:01.968  INFO 48870 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.80]
+2026-03-16 16:39:01.979  INFO 48870 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-03-16 16:39:01.979  INFO 48870 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 366 ms
+2026-03-16 16:39:02.527  INFO 48870 --- [PermissionCacheInit] c.ssy.config.PermissionCacheInitializer  : ✅ 权限缓存初始化成功
+2026-03-16 16:39:02.608  INFO 48870 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Starting...
+2026-03-16 16:39:02.982  INFO 48870 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : DatebookHikariCP - Start completed.
+2026-03-16 16:39:03.971  INFO 48870 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-03-16 16:39:04.051  INFO 48870 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2026-03-16 16:39:04.089  WARN 48870 --- [restartedMain] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2026-03-16 16:39:04.139  INFO 48870 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4d7de056, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2d77b84f, org.springframework.security.web.context.SecurityContextPersistenceFilter@6a445e71, org.springframework.security.web.header.HeaderWriterFilter@592a3d87, org.springframework.web.filter.CorsFilter@1bc4590, org.springframework.security.web.authentication.logout.LogoutFilter@3841c5f4, com.ssy.filter.ThreatDetectionFilter@5f19ad91, com.ssy.filter.ServicePermissionFilter@60a8ff43, com.ssy.filter.JwtAuthorizationFilter@7f213535, com.ssy.filter.CustomAuthenticationFilter@ed67523, com.ssy.filter.RequestUserContextFilter@33055aca, com.ssy.filter.EndpointRbacAuthorizationFilter@72d68a14, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1e19c4d4, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@16d70495, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@95a97ac, org.springframework.security.web.session.SessionManagementFilter@5196e338, org.springframework.security.web.access.ExceptionTranslationFilter@d1f36c3, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@74cf8437]
+2026-03-16 16:39:05.157  INFO 48870 --- [restartedMain] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-03-16 16:39:05.172  WARN 48870 --- [restartedMain] s.o.SpringCloudSecurityAutoConfiguration : All Spring Cloud Security modules and starters are deprecated. They will be moved to individual projects in the next major release.
+2026-03-16 16:39:05.207  INFO 48870 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2026-03-16 16:39:06.214  INFO 48870 --- [restartedMain] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-03-16 16:39:06.253  INFO 48870 --- [restartedMain] com.main.MainApplication                 : Started MainApplication in 5.694 seconds (JVM running for 6843.104)
+2026-03-16 16:39:06.254  INFO 48870 --- [restartedMain] com.ssy.config.ApiEndpointScannerConfig  : 🚀 应用启动完成，开始自动扫描API接口...
+2026-03-16 16:39:06.254  INFO 48870 --- [PermissionCacheInit] c.ssy.config.PermissionCacheInitializer  : 🔄 开始初始化权限缓存... (尝试 1/3)
+2026-03-16 16:39:06.335  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 开始扫描系统中的所有API接口...
+2026-03-16 16:39:06.344  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: OpenApiControllerWebMvc (Bean: openApiControllerWebMvc)
+2026-03-16 16:39:06.344  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller OpenApiControllerWebMvc 扫描完成，找到 0 个端点
+2026-03-16 16:39:06.344  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: test
+2026-03-16 16:39:06.344  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: test (Bean: test)
+2026-03-16 16:39:06.344  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller test 扫描完成，找到 3 个端点
+2026-03-16 16:39:06.344  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: ApiResourceController (Bean: apiResourceController)
+2026-03-16 16:39:06.344  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller ApiResourceController 扫描完成，找到 2 个端点
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: RbacAdminController
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: RbacAdminController (Bean: rbacAdminController)
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller RbacAdminController 扫描完成，找到 20 个端点
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: TestApiController (Bean: testApiController)
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller TestApiController 扫描完成，找到 4 个端点
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: PermissionCacheController
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: PermissionCacheController (Bean: permissionCacheController)
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller PermissionCacheController 扫描完成，找到 7 个端点
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: ApiEndpointController
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: ApiEndpointController (Bean: apiEndpointController)
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller ApiEndpointController 扫描完成，找到 8 个端点
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: ServiceAppController
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: ServiceAppController (Bean: serviceAppController)
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller ServiceAppController 扫描完成，找到 9 个端点
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: UserController (Bean: userController)
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller UserController 扫描完成，找到 2 个端点
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: ServiceTokenController
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: ServiceTokenController (Bean: serviceTokenController)
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller ServiceTokenController 扫描完成，找到 6 个端点
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: NoBasepathController (Bean: noBasepathController)
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller NoBasepathController 扫描完成，找到 1 个端点
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 检测到CGLIB代理类，使用父类: ThreatDetectionAdminController
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: ThreatDetectionAdminController (Bean: threatDetectionAdminController)
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller ThreatDetectionAdminController 扫描完成，找到 11 个端点
+2026-03-16 16:39:06.345  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: Swagger2ControllerWebMvc (Bean: swagger2ControllerWebMvc)
+2026-03-16 16:39:06.346  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller Swagger2ControllerWebMvc 扫描完成，找到 0 个端点
+2026-03-16 16:39:06.346  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: BasicErrorController (Bean: basicErrorController)
+2026-03-16 16:39:06.346  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller BasicErrorController 扫描完成，找到 0 个端点
+2026-03-16 16:39:06.346  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : 扫描Controller: AuthAccountController (Bean: authAccountController)
+2026-03-16 16:39:06.346  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : Controller AuthAccountController 扫描完成，找到 1 个端点
+2026-03-16 16:39:08.439  INFO 48870 --- [PermissionCacheInit] c.ssy.config.PermissionCacheInitializer  : ✅ 权限缓存初始化成功
+2026-03-16 16:39:18.001  INFO 48870 --- [restartedMain] c.s.service.impl.ApiEndpointServiceImpl  : API接口扫描完成，共扫描到 74 个接口，新增 0 个
+2026-03-16 16:39:18.074  INFO 48870 --- [restartedMain] c.s.s.impl.EndpointThreatCacheService    : 异常识别接口缓存已刷新: total=74, exact=49, pattern=25, cost=72ms
+2026-03-16 16:39:18.120  INFO 48870 --- [restartedMain] c.s.s.impl.EndpointRbacCacheService      : 接口RBAC缓存已刷新: total=74, protected=61, permissionBound=0, exact=49, pattern=25, cost=45ms
+2026-03-16 16:39:18.376  INFO 48870 --- [restartedMain] com.ssy.config.ApiEndpointScannerConfig  : ✅ API接口自动扫描完成！
+2026-03-16 16:39:18.376  INFO 48870 --- [restartedMain] com.ssy.config.ApiEndpointScannerConfig  : 📊 扫描结果：新增 0 个接口，耗时 12122 ms
+2026-03-16 16:39:18.514  INFO 48870 --- [restartedMain] c.s.s.impl.EndpointThreatCacheService    : 异常识别接口缓存已刷新: total=74, exact=49, pattern=25, cost=137ms
+2026-03-16 16:39:18.613  INFO 48870 --- [restartedMain] c.s.service.impl.IpAccessControlService  : IP黑白名单缓存已刷新: blacklist=0, whitelist=0
+2026-03-16 16:39:18.615  INFO 48870 --- [restartedMain] c.s.c.ThreatDetectionCacheInitializer    : 异常识别缓存初始化完成: endpointCacheSize=74, blacklistSize=0, whitelistSize=0, cost=238ms
+2026-03-16 16:39:18.711  INFO 48870 --- [restartedMain] c.s.s.impl.EndpointRbacCacheService      : 接口RBAC缓存已刷新: total=74, protected=61, permissionBound=0, exact=49, pattern=25, cost=96ms
+2026-03-16 16:39:18.712  INFO 48870 --- [restartedMain] c.s.config.EndpointRbacCacheInitializer  : 接口RBAC缓存初始化完成: size=74, cost=97ms
+2026-03-16 16:39:18.730  INFO 48870 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2026-03-16 16:39:30.545 ERROR 48870 --- [restartedMain] com.ssy.config.ApiEndpointScannerConfig  : ❌ API接口自动扫描失败：Could not open JDBC Connection for transaction; nested exception is java.sql.SQLTransientConnectionException: DatebookHikariCP - Connection is not available, request timed out after 30016ms.
+
+org.springframework.transaction.CannotCreateTransactionException: Could not open JDBC Connection for transaction; nested exception is java.sql.SQLTransientConnectionException: DatebookHikariCP - Connection is not available, request timed out after 30016ms.
+	at org.springframework.jdbc.datasource.DataSourceTransactionManager.doBegin(DataSourceTransactionManager.java:313) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:400) ~[spring-tx-5.3.30.jar:5.3.30]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:373) ~[spring-tx-5.3.30.jar:5.3.30]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:595) ~[spring-tx-5.3.30.jar:5.3.30]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:382) ~[spring-tx-5.3.30.jar:5.3.30]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-5.3.30.jar:5.3.30]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.30.jar:5.3.30]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:762) ~[spring-aop-5.3.30.jar:5.3.30]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:707) ~[spring-aop-5.3.30.jar:5.3.30]
+	at com.ssy.service.impl.ApiEndpointServiceImpl$$EnhancerBySpringCGLIB$$f2e3ff4a.scanAndSaveAllEndpoints(<generated>) ~[classes/:na]
+	at com.ssy.config.ApiEndpointScannerConfig.onApplicationEvent(ApiEndpointScannerConfig.java:46) ~[classes/:na]
+	at com.ssy.config.ApiEndpointScannerConfig.onApplicationEvent(ApiEndpointScannerConfig.java:24) ~[classes/:na]
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.doInvokeListener(SimpleApplicationEventMulticaster.java:178) ~[spring-context-5.3.30.jar:5.3.30]
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.invokeListener(SimpleApplicationEventMulticaster.java:171) ~[spring-context-5.3.30.jar:5.3.30]
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:145) ~[spring-context-5.3.30.jar:5.3.30]
+	at org.springframework.context.support.AbstractApplicationContext.publishEvent(AbstractApplicationContext.java:421) ~[spring-context-5.3.30.jar:5.3.30]
+	at org.springframework.context.support.AbstractApplicationContext.publishEvent(AbstractApplicationContext.java:378) ~[spring-context-5.3.30.jar:5.3.30]
+	at org.springframework.boot.context.event.EventPublishingRunListener.ready(EventPublishingRunListener.java:114) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplicationRunListeners.lambda$ready$6(SpringApplicationRunListeners.java:82) ~[spring-boot-2.7.16.jar:2.7.16]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1541) ~[na:na]
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:120) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:114) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplicationRunListeners.ready(SpringApplicationRunListeners.java:82) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:322) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1303) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1292) ~[spring-boot-2.7.16.jar:2.7.16]
+	at com.main.MainApplication.main(MainApplication.java:27) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50) ~[spring-boot-devtools-2.7.16.jar:2.7.16]
+Caused by: java.sql.SQLTransientConnectionException: DatebookHikariCP - Connection is not available, request timed out after 30016ms.
+	at com.zaxxer.hikari.pool.HikariPool.createTimeoutException(HikariPool.java:696) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:197) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:162) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:128) ~[HikariCP-4.0.3.jar:na]
+	at org.springframework.jdbc.datasource.DataSourceTransactionManager.doBegin(DataSourceTransactionManager.java:269) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	... 31 common frames omitted
+Caused by: java.sql.SQLNonTransientConnectionException: No operations allowed after connection closed.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:111) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:98) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:90) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:64) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:74) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:73) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ConnectionImpl.setNetworkTimeout(ConnectionImpl.java:2457) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.zaxxer.hikari.pool.PoolBase.setNetworkTimeout(PoolBase.java:566) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.isConnectionAlive(PoolBase.java:173) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:186) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:162) ~[HikariCP-4.0.3.jar:na]
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:128) ~[HikariCP-4.0.3.jar:na]
+	at org.springframework.jdbc.datasource.DataSourceUtils.fetchConnection(DataSourceUtils.java:160) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.datasource.DataSourceUtils.doGetConnection(DataSourceUtils.java:118) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:81) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.mybatis.spring.transaction.SpringManagedTransaction.openConnection(SpringManagedTransaction.java:80) ~[mybatis-spring-2.1.1.jar:2.1.1]
+	at org.mybatis.spring.transaction.SpringManagedTransaction.getConnection(SpringManagedTransaction.java:67) ~[mybatis-spring-2.1.1.jar:2.1.1]
+	at org.apache.ibatis.executor.BaseExecutor.getConnection(BaseExecutor.java:345) ~[mybatis-3.5.13.jar:3.5.13]
+	at org.apache.ibatis.executor.SimpleExecutor.prepareStatement(SimpleExecutor.java:89) ~[mybatis-3.5.13.jar:3.5.13]
+	at org.apache.ibatis.executor.SimpleExecutor.doUpdate(SimpleExecutor.java:49) ~[mybatis-3.5.13.jar:3.5.13]
+	at org.apache.ibatis.executor.BaseExecutor.update(BaseExecutor.java:117) ~[mybatis-3.5.13.jar:3.5.13]
+	at org.apache.ibatis.executor.CachingExecutor.update(CachingExecutor.java:76) ~[mybatis-3.5.13.jar:3.5.13]
+	at jdk.internal.reflect.GeneratedMethodAccessor51.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.apache.ibatis.plugin.Invocation.proceed(Invocation.java:49) ~[mybatis-3.5.13.jar:3.5.13]
+	at com.ssy.interceptor.SnowflakeIdInterceptor.intercept(SnowflakeIdInterceptor.java:72) ~[classes/:na]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:59) ~[mybatis-3.5.13.jar:3.5.13]
+	at com.sun.proxy.$Proxy137.update(Unknown Source) ~[na:na]
+	at jdk.internal.reflect.GeneratedMethodAccessor51.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:61) ~[mybatis-3.5.13.jar:3.5.13]
+	at com.sun.proxy.$Proxy137.update(Unknown Source) ~[na:na]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.update(DefaultSqlSession.java:197) ~[mybatis-3.5.13.jar:3.5.13]
+	at jdk.internal.reflect.GeneratedMethodAccessor77.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:425) ~[mybatis-spring-2.1.1.jar:2.1.1]
+	at com.sun.proxy.$Proxy124.update(Unknown Source) ~[na:na]
+	at org.mybatis.spring.SqlSessionTemplate.update(SqlSessionTemplate.java:288) ~[mybatis-spring-2.1.1.jar:2.1.1]
+	at org.apache.ibatis.binding.MapperMethod.execute(MapperMethod.java:67) ~[mybatis-3.5.13.jar:3.5.13]
+	at org.apache.ibatis.binding.MapperProxy$PlainMethodInvoker.invoke(MapperProxy.java:142) ~[mybatis-3.5.13.jar:3.5.13]
+	at org.apache.ibatis.binding.MapperProxy.invoke(MapperProxy.java:86) ~[mybatis-3.5.13.jar:3.5.13]
+	at com.sun.proxy.$Proxy219.disableExpired(Unknown Source) ~[na:na]
+	at com.ssy.service.impl.IpAccessControlService.cleanupLocalAndDbState(IpAccessControlService.java:306) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84) ~[spring-context-5.3.30.jar:5.3.30]
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54) ~[spring-context-5.3.30.jar:5.3.30]
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515) ~[na:na]
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:829) ~[na:na]
+Caused by: com.mysql.cj.exceptions.ConnectionIsClosedException: No operations allowed after connection closed.
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:490) ~[na:na]
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:62) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:105) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:150) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.NativeSession.checkClosed(NativeSession.java:753) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ConnectionImpl.checkClosed(ConnectionImpl.java:565) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ConnectionImpl.setNetworkTimeout(ConnectionImpl.java:2453) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	... 51 common frames omitted
+
+2026-03-16 16:39:30.572 ERROR 48870 --- [restartedMain] o.s.boot.SpringApplication               : Application run failed
+
+org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.exceptions.PersistenceException: 
+### Error querying database.  Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is java.sql.SQLException: HikariDataSource HikariDataSource (DatebookHikariCP) has been closed.
+### The error may exist in com/ssy/mapper/ApiEndpointMapper.java (best guess)
+### The error may involve com.ssy.mapper.ApiEndpointMapper.selectAll
+### The error occurred while executing a query
+### Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is java.sql.SQLException: HikariDataSource HikariDataSource (DatebookHikariCP) has been closed.
+	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:97) ~[mybatis-spring-2.1.1.jar:2.1.1]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:439) ~[mybatis-spring-2.1.1.jar:2.1.1]
+	at com.sun.proxy.$Proxy124.selectList(Unknown Source) ~[na:na]
+	at org.mybatis.spring.SqlSessionTemplate.selectList(SqlSessionTemplate.java:224) ~[mybatis-spring-2.1.1.jar:2.1.1]
+	at org.apache.ibatis.binding.MapperMethod.executeForMany(MapperMethod.java:147) ~[mybatis-3.5.13.jar:3.5.13]
+	at org.apache.ibatis.binding.MapperMethod.execute(MapperMethod.java:80) ~[mybatis-3.5.13.jar:3.5.13]
+	at org.apache.ibatis.binding.MapperProxy$PlainMethodInvoker.invoke(MapperProxy.java:142) ~[mybatis-3.5.13.jar:3.5.13]
+	at org.apache.ibatis.binding.MapperProxy.invoke(MapperProxy.java:86) ~[mybatis-3.5.13.jar:3.5.13]
+	at com.sun.proxy.$Proxy218.selectAll(Unknown Source) ~[na:na]
+	at com.ssy.service.impl.EndpointThreatCacheService.refresh(EndpointThreatCacheService.java:37) ~[classes/:na]
+	at com.ssy.config.ThreatDetectionCacheInitializer.onApplicationEvent(ThreatDetectionCacheInitializer.java:39) ~[classes/:na]
+	at com.ssy.config.ThreatDetectionCacheInitializer.onApplicationEvent(ThreatDetectionCacheInitializer.java:13) ~[classes/:na]
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.doInvokeListener(SimpleApplicationEventMulticaster.java:178) ~[spring-context-5.3.30.jar:5.3.30]
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.invokeListener(SimpleApplicationEventMulticaster.java:171) ~[spring-context-5.3.30.jar:5.3.30]
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:145) ~[spring-context-5.3.30.jar:5.3.30]
+	at org.springframework.context.support.AbstractApplicationContext.publishEvent(AbstractApplicationContext.java:421) ~[spring-context-5.3.30.jar:5.3.30]
+	at org.springframework.context.support.AbstractApplicationContext.publishEvent(AbstractApplicationContext.java:378) ~[spring-context-5.3.30.jar:5.3.30]
+	at org.springframework.boot.context.event.EventPublishingRunListener.ready(EventPublishingRunListener.java:114) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplicationRunListeners.lambda$ready$6(SpringApplicationRunListeners.java:82) ~[spring-boot-2.7.16.jar:2.7.16]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1541) ~[na:na]
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:120) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:114) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplicationRunListeners.ready(SpringApplicationRunListeners.java:82) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:322) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1303) ~[spring-boot-2.7.16.jar:2.7.16]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1292) ~[spring-boot-2.7.16.jar:2.7.16]
+	at com.main.MainApplication.main(MainApplication.java:27) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50) ~[spring-boot-devtools-2.7.16.jar:2.7.16]
+Caused by: org.apache.ibatis.exceptions.PersistenceException: 
+### Error querying database.  Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is java.sql.SQLException: HikariDataSource HikariDataSource (DatebookHikariCP) has been closed.
+### The error may exist in com/ssy/mapper/ApiEndpointMapper.java (best guess)
+### The error may involve com.ssy.mapper.ApiEndpointMapper.selectAll
+### The error occurred while executing a query
+### Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is java.sql.SQLException: HikariDataSource HikariDataSource (DatebookHikariCP) has been closed.
+	at org.apache.ibatis.exceptions.ExceptionFactory.wrapException(ExceptionFactory.java:30) ~[mybatis-3.5.13.jar:3.5.13]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:156) ~[mybatis-3.5.13.jar:3.5.13]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:147) ~[mybatis-3.5.13.jar:3.5.13]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:142) ~[mybatis-3.5.13.jar:3.5.13]
+	at jdk.internal.reflect.GeneratedMethodAccessor147.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:425) ~[mybatis-spring-2.1.1.jar:2.1.1]
+	... 30 common frames omitted
+Caused by: org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is java.sql.SQLException: HikariDataSource HikariDataSource (DatebookHikariCP) has been closed.
+	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:84) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.mybatis.spring.transaction.SpringManagedTransaction.openConnection(SpringManagedTransaction.java:80) ~[mybatis-spring-2.1.1.jar:2.1.1]
+	at org.mybatis.spring.transaction.SpringManagedTransaction.getConnection(SpringManagedTransaction.java:67) ~[mybatis-spring-2.1.1.jar:2.1.1]
+	at org.apache.ibatis.executor.BaseExecutor.getConnection(BaseExecutor.java:345) ~[mybatis-3.5.13.jar:3.5.13]
+	at org.apache.ibatis.executor.SimpleExecutor.prepareStatement(SimpleExecutor.java:89) ~[mybatis-3.5.13.jar:3.5.13]
+	at org.apache.ibatis.executor.SimpleExecutor.doQuery(SimpleExecutor.java:64) ~[mybatis-3.5.13.jar:3.5.13]
+	at org.apache.ibatis.executor.BaseExecutor.queryFromDatabase(BaseExecutor.java:333) ~[mybatis-3.5.13.jar:3.5.13]
+	at org.apache.ibatis.executor.BaseExecutor.query(BaseExecutor.java:158) ~[mybatis-3.5.13.jar:3.5.13]
+	at org.apache.ibatis.executor.CachingExecutor.query(CachingExecutor.java:110) ~[mybatis-3.5.13.jar:3.5.13]
+	at jdk.internal.reflect.GeneratedMethodAccessor76.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566) ~[na:na]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:61) ~[mybatis-3.5.13.jar:3.5.13]
+	at com.sun.proxy.$Proxy137.query(Unknown Source) ~[na:na]
+	at com.github.pagehelper.PageInterceptor.intercept(PageInterceptor.java:132) ~[pagehelper-5.3.0.jar:na]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:59) ~[mybatis-3.5.13.jar:3.5.13]
+	at com.sun.proxy.$Proxy137.query(Unknown Source) ~[na:na]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:154) ~[mybatis-3.5.13.jar:3.5.13]
+	... 36 common frames omitted
+Caused by: java.sql.SQLException: HikariDataSource HikariDataSource (DatebookHikariCP) has been closed.
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:96) ~[HikariCP-4.0.3.jar:na]
+	at org.springframework.jdbc.datasource.DataSourceUtils.fetchConnection(DataSourceUtils.java:160) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.datasource.DataSourceUtils.doGetConnection(DataSourceUtils.java:118) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:81) ~[spring-jdbc-5.3.30.jar:5.3.30]
+	... 53 common frames omitted
+

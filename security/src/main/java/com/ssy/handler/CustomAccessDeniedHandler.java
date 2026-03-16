@@ -30,7 +30,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
             throws IOException, ServletException {
 
         // 这里可以自定义返回的状态码、响应格式等
-        response.setStatus(HttpStatus.BAD_REQUEST);
+        response.setStatus(HttpStatus.FORBIDDEN);
         response.setContentType("application/json;charset=UTF-8");
         // 自定义返回的消息
 

@@ -15,6 +15,8 @@ import com.ssy.entity.HttpStatus;
 import com.ssy.entity.Result;
 import com.ssy.properties.JwtProperties;
 import com.ssy.properties.SecurityProperties;
+import com.ssy.service.impl.UserPermissionCacheService;
+import com.ssy.service.impl.UserPermissionCacheService.UserAuthSnapshot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 @Order(2)
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -36,6 +39,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     JwtProperties jwtProperties;
     @Autowired
     SecurityProperties securityProperties;
+    @Autowired(required = false)
+    UserPermissionCacheService userPermissionCacheService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -79,6 +84,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 // 从Token中提取用户信息，构建CustomUserDetails
                 Long userId = decodedJWT.getClaim("userId").asLong();
                 Integer status = decodedJWT.getClaim("status").asInt();
+                String loginType = decodedJWT.getClaim("loginType").asString();
+                String rolesClaim = decodedJWT.getClaim("roles").asString();
+                String permissionsClaim = decodedJWT.getClaim("permissions").asString();
+                // 兼容极少数旧token（可逐步移除）
                 String authoritiesClaim = decodedJWT.getClaim("authorities").asString();
 
                 // 构建UserEntity
@@ -86,15 +95,52 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 user.setUserId(userId != null ? userId : 0L); // 提供默认值避免null
                 user.setUsername(subject);
                 user.setStatus(status != null ? status : 0);
+                user.setLoginType(loginType);
 
 
-                if (authoritiesClaim != null && !authoritiesClaim.isEmpty()) {
+                if (rolesClaim != null && !rolesClaim.isEmpty()) {
+                    List<String> roles = Arrays.stream(rolesClaim.split(","))
+                            .map(String::trim)
+                            .filter(s -> !s.isEmpty())
+                            .collect(Collectors.toList());
+                    user.setRoles(roles);
+                }
+
+                if (permissionsClaim != null && !permissionsClaim.isEmpty()) {
+                    List<String> permissions = Arrays.stream(permissionsClaim.split(","))
+                            .map(String::trim)
+                            .filter(s -> !s.isEmpty())
+                            .collect(Collectors.toList());
+                    user.setPermissions(permissions);
+                }
+
+                if ((user.getRoles() == null || user.getRoles().isEmpty())
+                        && (user.getPermissions() == null || user.getPermissions().isEmpty())
+                        && authoritiesClaim != null && !authoritiesClaim.isEmpty()) {
                     List<String> authorities = Arrays.stream(authoritiesClaim.split(","))
                             .map(String::trim)
                             .filter(s -> !s.isEmpty())
                             .collect(Collectors.toList());
                     user.setAuthorities(authorities);
-                    System.err.println("用户权限: " + user.getAuthorities());
+                }
+
+                // 单体项目场景：以本地RBAC缓存为准，避免角色/权限变更后必须等待旧token过期
+                if (userId != null && userPermissionCacheService != null) {
+                    UserAuthSnapshot snapshot = userPermissionCacheService.getUserSnapshot(userId);
+                    if (snapshot == null || !snapshot.exists()) {
+                        writeUnauthorizedResponse(response);
+                        return;
+                    }
+                    if (!snapshot.isEnabled()) {
+                        writeUnauthorizedResponse(response);
+                        return;
+                    }
+                    user.setStatus(snapshot.getStatus());
+                    if (snapshot.getUsername() != null && !snapshot.getUsername().trim().isEmpty()) {
+                        user.setUsername(snapshot.getUsername());
+                    }
+                    user.setRoles(new java.util.ArrayList<>(snapshot.getRoles()));
+                    user.setPermissions(new java.util.ArrayList<>(snapshot.getPermissions()));
                 }
 
                 // 创建CustomUserDetails

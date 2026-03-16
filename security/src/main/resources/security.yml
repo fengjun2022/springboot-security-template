@@ -4,7 +4,8 @@ security:
     - "/login"
     - "/css/**"
     - "/js/**"
-    - "/user/**"
+    - "/user/register"
+    - "/auth/register"
     - "/doc.html"
     - "/swagger-ui.html"
     - "/swagger-ui/**"
@@ -20,6 +21,26 @@ security:
       role: ADMIN
     - pattern: "/manager/**"
       role: MANAGER
+  endpoint-rbac:
+    strict-unbound-permission-deny: false # 严格模式：已扫描且require_auth=1但未绑定权限时拒绝
+  threat-detection:
+    enabled: true
+    monitor-unknown-endpoints: true
+    trust-forward-headers: true
+    capture-body-sample: true
+    max-inspect-body-bytes: 4096
+    global-window-ms: 10000
+    global-window-limit: 300
+    endpoint-window-ms: 10000
+    endpoint-window-limit: 120
+    auto-block-seconds: 600
+    auto-block-multiplier: 3
+    auth-feedback-window-ms: 60000
+    auth401-feedback-threshold: 8
+    auth403-feedback-threshold: 5
+    auth403-auto-block-threshold: 12
+    event-queue-capacity: 4096
+    blacklist-queue-capacity: 1024
 
 jwt:
   secret-key: nangtongcourtjj1001001

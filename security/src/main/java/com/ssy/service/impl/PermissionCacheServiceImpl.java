@@ -6,6 +6,7 @@ import com.ssy.entity.ServiceAppEntity;
 import com.ssy.service.PermissionCacheService;
 import com.ssy.service.ServiceAppService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Service
 @EnableScheduling
+@DependsOn("databaseSchemaAutoInitializer")
 public class PermissionCacheServiceImpl implements PermissionCacheService {
 
     @Autowired

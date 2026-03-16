@@ -27,12 +27,12 @@ public class test {
 
 
     @GetMapping("/b")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('test:admin')")
     public Result<String> test1 (){
         return Result.success("权限接口测试成功");
     }
     @GetMapping("/c")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAuthority('test:user')")
     public Result<String> test2 (){
         return Result.success("权限接口测试成功");
     }

@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -29,17 +31,49 @@ public class CustomUserDetails implements UserDetails {
     // 这里返回用户对应的权限列表
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (user.getAuthorities() != null) {
-            return user.getAuthorities().stream()
-                    .map(auth -> {
-                        if (!auth.startsWith("ROLE_")) {
-                            return new SimpleGrantedAuthority("ROLE_" + auth);
-                        }
-                        return new SimpleGrantedAuthority(auth);
-                    })
-                    .collect(Collectors.toList());
+        Set<String> merged = new LinkedHashSet<>();
+
+        if (user.getRoles() != null) {
+            for (String role : user.getRoles()) {
+                if (role == null || role.trim().isEmpty()) {
+                    continue;
+                }
+                String roleCode = role.trim();
+                if (!roleCode.startsWith("ROLE_")) {
+                    roleCode = "ROLE_" + roleCode;
+                }
+                merged.add(roleCode);
+            }
         }
-        return Collections.emptyList();
+
+        if (user.getPermissions() != null) {
+            for (String perm : user.getPermissions()) {
+                if (perm == null || perm.trim().isEmpty()) {
+                    continue;
+                }
+                merged.add(perm.trim());
+            }
+        }
+
+        // 极少数旧数据兼容回退
+        if (merged.isEmpty() && user.getAuthorities() != null) {
+            for (String auth : user.getAuthorities()) {
+                if (auth == null || auth.trim().isEmpty()) {
+                    continue;
+                }
+                String value = auth.trim();
+                if (!value.contains(":") && !value.startsWith("ROLE_")) {
+                    value = "ROLE_" + value;
+                }
+                merged.add(value);
+            }
+        }
+
+        if (merged.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return merged.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
 
     @Override

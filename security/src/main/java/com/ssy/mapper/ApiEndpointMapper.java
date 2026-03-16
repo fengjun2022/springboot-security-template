@@ -60,6 +60,9 @@ public interface ApiEndpointMapper {
         @Select("SELECT * FROM api_endpoints WHERE path = #{path} AND method = #{method}")
         ApiEndpointEntity selectByPathAndMethod(@Param("path") String path, @Param("method") String method);
 
+        @Select("SELECT * FROM api_endpoints WHERE id = #{id}")
+        ApiEndpointEntity selectById(@Param("id") Long id);
+
         /**
          * 查询所有API接口
          *
@@ -123,12 +126,23 @@ public interface ApiEndpointMapper {
          * @param apiEndpoint API接口实体
          * @return 影响行数
          */
-        @Update("UPDATE api_endpoints SET " +
-                "controller_class = #{controllerClass}, controller_method = #{controllerMethod}, " +
-                "base_path = #{basePath}, description = #{description}, auth = #{auth}, " +
-                "require_auth = #{requireAuth}, module_group = #{moduleGroup}, " +
-                "status = #{status}, remark = #{remark}, update_time = #{updateTime} " +
-                "WHERE id = #{id}")
+        @Update("<script>" +
+                "UPDATE api_endpoints " +
+                "<set>" +
+                "<if test='controllerClass != null'>controller_class = #{controllerClass},</if>" +
+                "<if test='controllerMethod != null'>controller_method = #{controllerMethod},</if>" +
+                "<if test='basePath != null'>base_path = #{basePath},</if>" +
+                "<if test='description != null'>description = #{description},</if>" +
+                "<if test='auth != null'>auth = #{auth},</if>" +
+                "<if test='threatMonitorEnabled != null'>threat_monitor_enabled = #{threatMonitorEnabled},</if>" +
+                "<if test='requireAuth != null'>require_auth = #{requireAuth},</if>" +
+                "<if test='moduleGroup != null'>module_group = #{moduleGroup},</if>" +
+                "<if test='status != null'>status = #{status},</if>" +
+                "<if test='remark != null'>remark = #{remark},</if>" +
+                "update_time = #{updateTime}" +
+                "</set>" +
+                "WHERE id = #{id}" +
+                "</script>")
         int update(ApiEndpointEntity apiEndpoint);
 
         /**
@@ -149,6 +163,15 @@ public interface ApiEndpointMapper {
         int deleteByControllerClass(@Param("controllerClass") String controllerClass);
 
         /**
+         * 按模块批量更新异常识别监控开关
+         */
+        @Update("UPDATE api_endpoints SET threat_monitor_enabled = #{enabled}, update_time = #{updateTime} " +
+                "WHERE module_group = #{moduleGroup}")
+        int updateThreatMonitorByModule(@Param("moduleGroup") String moduleGroup,
+                                        @Param("enabled") Integer enabled,
+                                        @Param("updateTime") java.time.LocalDateTime updateTime);
+
+        /**
          * 查询所有模块分组
          *
          * @return 模块分组列表
@@ -164,6 +187,9 @@ public interface ApiEndpointMapper {
          */
         @Select("SELECT * FROM api_endpoints WHERE controller_class = #{controllerClass}")
         List<ApiEndpointEntity> selectByControllerClass(@Param("controllerClass") String controllerClass);
+
+        @Select("SELECT * FROM api_endpoints WHERE module_group = #{moduleGroup} ORDER BY controller_class, path")
+        List<ApiEndpointEntity> selectByModuleGroup(@Param("moduleGroup") String moduleGroup);
 
         /**
          * 根据权限表达式查询API接口

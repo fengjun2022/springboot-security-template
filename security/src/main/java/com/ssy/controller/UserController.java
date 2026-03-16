@@ -2,8 +2,7 @@ package com.ssy.controller;
 
 import com.ssy.dto.UserEntity;
 import com.ssy.entity.Result;
-import com.ssy.repository.UserRepository;
-import com.ssy.service.UserService;
+import com.ssy.service.impl.RbacIdentityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,10 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    UserService userService;
-    @Autowired
-
-    UserRepository userRepository;
+    RbacIdentityService rbacIdentityService;
     /**
      * 用户注册接口
      * 
@@ -33,18 +29,31 @@ public class UserController {
      */
     @PostMapping("/register")
     public Result<UserEntity> register(@RequestBody UserEntity user) {
-        userService.register(user);
-
-        return Result.success("注册成功");
+        try {
+            RbacIdentityService.SelfRegisterCommand cmd = new RbacIdentityService.SelfRegisterCommand();
+            cmd.setUsername(user.getUsername());
+            cmd.setPassword(user.getPassword());
+            cmd.setRoleCodes(user.getRoles() == null ? null : new java.util.ArrayList<>(user.getRoles()));
+            cmd.setStatus(0);
+            UserEntity created = rbacIdentityService.selfRegister(cmd);
+            return Result.success(created);
+        } catch (Exception e) {
+            return Result.error(e.getMessage());
+        }
     }
 
 
     @GetMapping("/info")
     public Result<UserEntity> userInfo(@RequestParam("userId") Long userId){
-
-        UserEntity  info =userService.userInfo(userId);
-
-        return Result.success(info);
+        try {
+            UserEntity info = rbacIdentityService.getUserByUserId(userId);
+            if (info == null) {
+                return Result.error("用户不存在");
+            }
+            return Result.success(rbacIdentityService.sanitizeUser(info));
+        } catch (Exception e) {
+            return Result.error(e.getMessage());
+        }
     }
 
 

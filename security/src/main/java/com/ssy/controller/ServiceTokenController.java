@@ -36,6 +36,7 @@ public class ServiceTokenController {
         }
     }
 
+    @PreAuthorize("hasAuthority('svc:token:read')")
     @PostMapping("/validate")
     public Result<ServiceTokenEntity> validateToken(@RequestParam String token) {
         ServiceTokenEntity serviceToken = serviceTokenService.validateToken(token);
@@ -46,6 +47,7 @@ public class ServiceTokenController {
         }
     }
 
+    @PreAuthorize("hasAuthority('svc:token:read')")
     @GetMapping("/app/{appId}")
     public Result<ServiceTokenEntity> getTokenByAppId(@PathVariable String appId) {
         ServiceTokenEntity serviceToken = serviceTokenService.getTokenByAppId(appId);
@@ -56,7 +58,7 @@ public class ServiceTokenController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('svc:token:manage')")
     @PutMapping("/{tokenId}/invalidate")
     public Result<Void> invalidateToken(@PathVariable Long tokenId) {
         try {
@@ -67,7 +69,7 @@ public class ServiceTokenController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('svc:token:manage')")
     @PostMapping("/regenerate")
     public Result<ServiceTokenEntity> regenerateToken(@RequestBody ServiceTokenIssueDTO issueDTO) {
         try {
@@ -81,7 +83,7 @@ public class ServiceTokenController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('svc:token:manage')")
     @PutMapping("/app/{appId}/invalidate")
     public Result<Void> invalidateTokensByAppId(@PathVariable String appId) {
         try {

@@ -1,5 +1,6 @@
 package com.ssy.holder;
 
+import com.ssy.context.RequestUserContext;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -69,6 +70,31 @@ public class SecurityUserContextHolder {
             return ((UserDetails) principal);
         }
         return null;
+    }
+
+    /**
+     * 获取当前请求线程上下文（推荐业务层优先使用）
+     */
+    public RequestUserContext getRequestUserContext() {
+        return RequestUserContextHolder.get();
+    }
+
+    public Long getCurrentUserId() {
+        RequestUserContext context = RequestUserContextHolder.get();
+        if (context == null || !context.isAuthenticated() || context.isServiceCall()) {
+            return null;
+        }
+        return context.getUserId();
+    }
+
+    public boolean hasRole(String roleCode) {
+        RequestUserContext context = RequestUserContextHolder.get();
+        return context != null && context.hasRole(roleCode);
+    }
+
+    public boolean hasPermission(String permissionCode) {
+        RequestUserContext context = RequestUserContextHolder.get();
+        return context != null && context.hasPermission(permissionCode);
     }
 
 

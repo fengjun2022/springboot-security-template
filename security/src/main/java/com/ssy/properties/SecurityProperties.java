@@ -30,6 +30,7 @@ public class SecurityProperties {
 
     private List<String> permitAll;
     private List<RoleMapping> roleBased;
+    private EndpointRbac endpointRbac = new EndpointRbac();
 
     @PostConstruct
     public void init() {
@@ -72,5 +73,14 @@ public class SecurityProperties {
         public void setRole(String role) {
             this.role = role;
         }
+    }
+
+    @Data
+    public static class EndpointRbac {
+        /**
+         * 严格模式：当接口已扫描且 require_auth=1 但未绑定任何权限时，直接拒绝访问。
+         * 默认 false，便于平滑迁移。
+         */
+        private Boolean strictUnboundPermissionDeny = false;
     }
 }

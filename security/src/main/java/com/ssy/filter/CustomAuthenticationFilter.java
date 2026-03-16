@@ -29,6 +29,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -99,20 +101,27 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         // 获取用户信息
         CustomUserDetails userDetails = (CustomUserDetails) authResult.getPrincipal();
+        UserEntity userDetailsUser = userDetails.getUser();
 
         // 获取登录类型（可以根据需要在token中添加不同的claim）
         String loginType = (String) authResult.getDetails();
 
-        // 生成权限字符串
-        String authoritiesString = userDetails.getAuthorities().stream()
-                .map(authority -> {
-                    return authority.getAuthority();
-                })
+        Collection<String> roleCodes = userDetailsUser.getRoles() == null ? Collections.emptyList() : userDetailsUser.getRoles();
+        Collection<String> permissionCodes = userDetailsUser.getPermissions() == null ? Collections.emptyList() : userDetailsUser.getPermissions();
+
+        String rolesClaim = roleCodes.stream()
+                .filter(x -> x != null && !x.trim().isEmpty())
+                .map(String::trim)
+                .collect(Collectors.joining(","));
+        String permissionsClaim = permissionCodes.stream()
+                .filter(x -> x != null && !x.trim().isEmpty())
+                .map(String::trim)
                 .collect(Collectors.joining(","));
 
         String token = JWT.create()
                 .withSubject(userDetails.getUsername())
-                .withClaim("authorities", authoritiesString) // 使用简单的逗号分隔格式
+                .withClaim("roles", rolesClaim)
+                .withClaim("permissions", permissionsClaim)
                 .withClaim("userId", userDetails.getUser().getUserId()) // 添加userId
                 .withClaim("status", userDetails.getUser().getStatus()) // 添加status
                 .withClaim("loginType", loginType)
@@ -120,7 +129,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .sign(Algorithm.HMAC256(jwtProperties.getSecretKey().getBytes()));
         // 将 Token 写入响应头，前端需保存并在后续请求中携带该 Token
         response.addHeader(jwtProperties.getHeadName(), jwtProperties.getHeadBase() + token);
-        UserEntity userDetailsUser = userDetails.getUser();
         userDetailsUser.setToken(token);
         userDetailsUser.setPassword(null);
         // 构建返回数据，Result.success 方法封装了成功状态和数据（此处返回用户名）

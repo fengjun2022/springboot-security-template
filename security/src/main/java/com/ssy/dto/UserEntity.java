@@ -20,6 +20,18 @@ public class UserEntity extends com.pojo.entity.UserEntity {
      private String phone;
      private Integer status;
      private String token;
+     private String loginType;
      private Long userId;
+     /**
+      * 兼容旧字段：不再作为标准RBAC主数据来源
+      */
      private Collection<String> authorities;
+     /**
+      * 标准RBAC角色编码集合（如 ADMIN / USER）
+      */
+     private Collection<String> roles;
+     /**
+      * 标准RBAC权限编码集合（如 iam:user:create）
+      */
+     private Collection<String> permissions;
 }

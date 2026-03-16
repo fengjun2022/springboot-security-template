@@ -3,7 +3,7 @@ sbt:
     driver-class-name: com.mysql.cj.jdbc.Driver
     host: mysql
     port: 3306
-    database: xxx
+    database: zxy_hospital
     username: root
     password: ntjcy@2014
 

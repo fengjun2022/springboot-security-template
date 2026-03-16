@@ -33,6 +33,7 @@ public class ApiEndpointController {
      * 分页查询API接口
      */
     @ApiOperation("分页查询API接口")
+    @PreAuthorize("hasAuthority('api:endpoint:read')")
     @GetMapping("/page")
     public Result<ApiEndpointService.PageResult<ApiEndpointEntity>> getEndpointsByPage(
             @ApiParam("页码") @RequestParam(defaultValue = "1") int page,
@@ -52,6 +53,7 @@ public class ApiEndpointController {
      * 搜索API接口
      */
     @ApiOperation("搜索API接口")
+    @PreAuthorize("hasAuthority('api:endpoint:read')")
     @GetMapping("/search")
     public Result<ApiEndpointService.PageResult<ApiEndpointEntity>> searchEndpoints(
             @ApiParam("搜索关键词") @RequestParam String keyword,
@@ -70,6 +72,7 @@ public class ApiEndpointController {
      * 获取所有模块分组
      */
     @ApiOperation("获取所有模块分组")
+    @PreAuthorize("hasAuthority('api:endpoint:read')")
     @GetMapping("/modules")
     public Result<List<String>> getAllModuleGroups() {
         try {
@@ -84,6 +87,7 @@ public class ApiEndpointController {
      * 根据ID查询API接口详情
      */
     @ApiOperation("根据ID查询API接口详情")
+    @PreAuthorize("hasAuthority('api:endpoint:read')")
     @GetMapping("/{id}")
     public Result<ApiEndpointEntity> getEndpointById(@ApiParam("接口ID") @PathVariable Long id) {
         try {
@@ -102,7 +106,7 @@ public class ApiEndpointController {
      * 更新API接口信息
      */
     @ApiOperation("更新API接口信息")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('api:endpoint:manage')")
     @PutMapping("/{id}")
     public Result<String> updateEndpoint(
             @ApiParam("接口ID") @PathVariable Long id,
@@ -111,6 +115,7 @@ public class ApiEndpointController {
             ApiEndpointEntity endpoint = new ApiEndpointEntity();
             endpoint.setId(id);
             endpoint.setDescription(updateDTO.getDescription());
+            endpoint.setThreatMonitorEnabled(updateDTO.getThreatMonitorEnabled());
             endpoint.setRequireAuth(updateDTO.getRequireAuth());
             endpoint.setModuleGroup(updateDTO.getModuleGroup());
             endpoint.setStatus(updateDTO.getStatus());
@@ -131,7 +136,7 @@ public class ApiEndpointController {
      * 手动扫描新增接口
      */
     @ApiOperation("手动扫描新增接口")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('api:endpoint:manage')")
     @PostMapping("/scan")
     public Result<String> scanNewEndpoints() {
         try {
@@ -146,7 +151,7 @@ public class ApiEndpointController {
      * 强制重新扫描所有接口
      */
     @ApiOperation("强制重新扫描所有接口")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('api:endpoint:manage')")
     @PostMapping("/rescan")
     public Result<String> forceRescanEndpoints() {
         try {
@@ -161,6 +166,7 @@ public class ApiEndpointController {
      * 按模块分组查询接口
      */
     @ApiOperation("按模块分组查询接口")
+    @PreAuthorize("hasAuthority('api:endpoint:read')")
     @GetMapping("/by-module/{moduleGroup}")
     public Result<ApiEndpointService.PageResult<ApiEndpointEntity>> getEndpointsByModule(
             @ApiParam("模块分组") @PathVariable String moduleGroup,
@@ -180,6 +186,7 @@ public class ApiEndpointController {
      */
     public static class ApiEndpointUpdateDTO {
         private String description;
+        private Integer threatMonitorEnabled;
         private Integer requireAuth;
         private String moduleGroup;
         private Integer status;
@@ -200,6 +207,14 @@ public class ApiEndpointController {
 
         public void setRequireAuth(Integer requireAuth) {
             this.requireAuth = requireAuth;
+        }
+
+        public Integer getThreatMonitorEnabled() {
+            return threatMonitorEnabled;
+        }
+
+        public void setThreatMonitorEnabled(Integer threatMonitorEnabled) {
+            this.threatMonitorEnabled = threatMonitorEnabled;
         }
 
         public String getModuleGroup() {

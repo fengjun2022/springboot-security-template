@@ -41,6 +41,12 @@ public class ApiEndpointServiceImpl implements ApiEndpointService {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired(required = false)
+    private EndpointThreatCacheService endpointThreatCacheService;
+
+    @Autowired(required = false)
+    private EndpointRbacCacheService endpointRbacCacheService;
+
     /**
      * API扫描功能开关，从yml配置文件读取
      * 默认值为true，即默认开启扫描功能
@@ -140,6 +146,7 @@ public class ApiEndpointServiceImpl implements ApiEndpointService {
         }
 
         logger.info("API接口扫描完成，共扫描到 {} 个接口，新增 {} 个", allEndpoints.size(), savedCount);
+        refreshEndpointCachesQuietly();
         return savedCount;
     }
 
@@ -167,9 +174,11 @@ public class ApiEndpointServiceImpl implements ApiEndpointService {
             }
             int insertedCount = apiEndpointMapper.batchInsert(allEndpoints);
             logger.info("强制重新扫描完成，共插入 {} 个接口", insertedCount);
+            refreshEndpointCachesQuietly();
             return insertedCount;
         }
 
+        refreshEndpointCachesQuietly();
         return 0;
     }
 
@@ -210,7 +219,11 @@ public class ApiEndpointServiceImpl implements ApiEndpointService {
     @Override
     public boolean updateEndpoint(ApiEndpointEntity apiEndpoint) {
         apiEndpoint.setUpdateTime(LocalDateTime.now());
-        return apiEndpointMapper.update(apiEndpoint) > 0;
+        boolean success = apiEndpointMapper.update(apiEndpoint) > 0;
+        if (success) {
+            refreshEndpointCachesQuietly();
+        }
+        return success;
     }
 
     /**
@@ -711,5 +724,26 @@ public class ApiEndpointServiceImpl implements ApiEndpointService {
     @Override
     public List<ApiEndpointEntity> getAllEndpoints() {
         return apiEndpointMapper.selectAll();
+    }
+
+    private void refreshEndpointCachesQuietly() {
+        if (endpointThreatCacheService == null) {
+            // 继续尝试刷新 RBAC 缓存
+        } else {
+            try {
+                endpointThreatCacheService.refresh();
+            } catch (Exception e) {
+                logger.warn("刷新异常识别接口缓存失败: {}", e.getMessage());
+            }
+        }
+
+        if (endpointRbacCacheService == null) {
+            return;
+        }
+        try {
+            endpointRbacCacheService.refresh();
+        } catch (Exception e) {
+            logger.warn("刷新接口RBAC缓存失败: {}", e.getMessage());
+        }
     }
 }

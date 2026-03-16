@@ -26,7 +26,7 @@ public class ServiceAppController {
     @Autowired
     private ServiceAppService serviceAppService;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('svc:app:create')")
     @PostMapping("/register")
     public Result<ServiceAppEntity> registerApp(@RequestBody ServiceAppRegisterDTO registerDTO) {
         try {
@@ -41,6 +41,7 @@ public class ServiceAppController {
         }
     }
 
+    @PreAuthorize("hasAuthority('svc:app:read')")
     @GetMapping("/{id}")
     public Result<ServiceAppEntity> getById(@PathVariable Long id) {
         ServiceAppEntity serviceApp = serviceAppService.getById(id);
@@ -51,19 +52,21 @@ public class ServiceAppController {
         }
     }
 
+    @PreAuthorize("hasAuthority('svc:app:read')")
     @GetMapping("/list")
     public Result<List<ServiceAppEntity>> getAllApps() {
         List<ServiceAppEntity> apps = serviceAppService.getAllApps();
         return Result.success(apps);
     }
 
+    @PreAuthorize("hasAuthority('svc:app:read')")
     @GetMapping("/enabled")
     public Result<List<ServiceAppEntity>> getEnabledApps() {
         List<ServiceAppEntity> apps = serviceAppService.getAllEnabledApps();
         return Result.success(apps);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('svc:app:update')")
     @PutMapping("/update")
     public Result<ServiceAppEntity> updateApp(@RequestBody ServiceAppUpdateDTO updateDTO) {
         try {
@@ -82,7 +85,7 @@ public class ServiceAppController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('svc:app:status:update')")
     @PutMapping("/{id}/status")
     public Result<Void> updateStatus(
             @PathVariable Long id,
@@ -95,7 +98,7 @@ public class ServiceAppController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('svc:app:delete')")
     @DeleteMapping("/{id}")
     public Result<Void> deleteApp(@PathVariable Long id) {
         try {
@@ -106,6 +109,7 @@ public class ServiceAppController {
         }
     }
 
+    @PreAuthorize("hasAuthority('svc:app:validate')")
     @PostMapping("/validate")
     public Result<ServiceAppEntity> validateApp(
             @RequestParam String appId,
@@ -118,6 +122,7 @@ public class ServiceAppController {
         }
     }
 
+    @PreAuthorize("hasAuthority('svc:app:permission:check')")
     @GetMapping("/permission/check")
     public Result<Boolean> checkPermission(
             @RequestParam String appId,

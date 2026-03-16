@@ -1,7 +1,6 @@
 package com.ssy.service.impl;
 
 import com.ssy.dto.UserEntity;
-import com.ssy.mapper.UserMapper;
 import com.ssy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,11 +16,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserRepositoryImpl implements UserRepository {
     @Autowired
-    UserMapper userMapper;
+    RbacIdentityService rbacIdentityService;
     @Override
     public UserEntity queryUser(String username) {
-        UserEntity userEntity = userMapper.queryUser(username);
-
-        return userEntity;
+        return rbacIdentityService.loadUserForAuth(username);
     }
 }

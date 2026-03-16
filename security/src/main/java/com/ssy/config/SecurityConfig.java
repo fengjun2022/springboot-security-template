@@ -1,8 +1,11 @@
 package com.ssy.config;
 
 import com.ssy.filter.CustomAuthenticationFilter;
+import com.ssy.filter.EndpointRbacAuthorizationFilter;
 import com.ssy.filter.JwtAuthorizationFilter;
+import com.ssy.filter.RequestUserContextFilter;
 import com.ssy.filter.ServicePermissionFilter;
+import com.ssy.filter.ThreatDetectionFilter;
 import com.ssy.handler.CustomAccessDeniedHandler;
 import com.ssy.properties.SecurityProperties;
 import com.ssy.security.ServiceCallVoter;
@@ -57,6 +60,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public ThreatDetectionFilter threatDetectionFilter() {
+        return new ThreatDetectionFilter();
+    }
+
+    @Bean
+    public RequestUserContextFilter requestUserContextFilter() {
+        return new RequestUserContextFilter();
+    }
+
+    @Bean
+    public EndpointRbacAuthorizationFilter endpointRbacAuthorizationFilter() {
+        return new EndpointRbacAuthorizationFilter();
+    }
+
+    @Bean
     public CustomAuthenticationFilter customAuthenticationFilter() throws Exception {
         return new CustomAuthenticationFilter(authenticationManager());
     }
@@ -107,8 +125,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 配置 CORS 策略支持跨域请求
         http.cors().and();
 
-        // *** 关键修改：添加ServicePermissionFilter到过滤器链的最前面 ***
+        // 先注册 ServicePermissionFilter，让其类在 Spring Security 过滤器顺序表中可作为锚点
         http.addFilterBefore(servicePermissionFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        // 异常识别过滤器（IP黑名单/频率异常/注入特征检测），放在 ServicePermissionFilter 之前
+        http.addFilterBefore(threatDetectionFilter(), ServicePermissionFilter.class);
 
         // 使用 URL 授权配置注册器统一配置所有 URL 的访问规则
         ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = http
@@ -138,6 +159,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilter(customAuthenticationFilter());
         // 添加 JWT 授权过滤器，在认证过滤器之前拦截请求，根据请求头中的 JWT Token 进行授权验证
         http.addFilterBefore(jwtAuthorizationFilter(), CustomAuthenticationFilter.class);
+        // 将登录主体写入线程上下文（供业务层/过滤器热路径读取）
+        http.addFilterAfter(requestUserContextFilter(), JwtAuthorizationFilter.class);
+        // 基于 api_endpoints 的接口级 RBAC 快速预检（复杂表达式仍由方法级注解兜底）
+        http.addFilterAfter(endpointRbacAuthorizationFilter(), RequestUserContextFilter.class);
         // 设置自定义的用户权限不足返回错误
         http.exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler());
     }

@@ -37,6 +37,9 @@ public class ApiEndpointEntity {
     /** 接口描述 */
     private String description;
 
+    /** 异常识别监控开关 (0-白名单直通, 1-启用监控) */
+    private Integer threatMonitorEnabled;
+
     /** 是否需要认证 (0-不需要, 1-需要) */
     private Integer requireAuth;
 
