@@ -218,7 +218,24 @@ public class IpAccessControlService {
     }
 
     public void manualBlockIp(String ip, String reason, int expireSeconds) {
-        addToBlacklist(ip, "MANUAL_BLOCK", reason, expireSeconds, "MANUAL", "管理员手动拉黑");
+        if (ip == null || ip.isEmpty()) {
+            return;
+        }
+        SecurityIpBlacklistEntity entity = buildBlacklistEntity(
+                ip,
+                "MANUAL_BLOCK",
+                reason,
+                expireSeconds,
+                "MANUAL",
+                "管理员手动拉黑"
+        );
+        blacklistCache.merge(ip, toExpireEpochMillis(entity.getExpireTime()), Math::max);
+        try {
+            securityIpBlacklistMapper.upsert(entity);
+        } catch (Exception e) {
+            blacklistCache.remove(ip);
+            throw new IllegalStateException("手动拉黑持久化失败: " + e.getMessage(), e);
+        }
     }
 
     public void removeFromBlacklist(String ip) {
@@ -263,10 +280,27 @@ public class IpAccessControlService {
         if (ip == null || ip.isEmpty()) {
             return;
         }
+        SecurityIpBlacklistEntity entity = buildBlacklistEntity(ip, attackType, reason, expireSeconds, source, remark);
+        long expireEpochMillis = toExpireEpochMillis(entity.getExpireTime());
+        blacklistCache.merge(ip, expireEpochMillis, Math::max);
+
+        blacklistPersistenceExecutor.execute(() -> {
+            try {
+                securityIpBlacklistMapper.upsert(entity);
+            } catch (Exception e) {
+                log.warn("异步持久化黑名单失败 ip={}, reason={}: {}", ip, reason, e.getMessage());
+            }
+        });
+    }
+
+    private SecurityIpBlacklistEntity buildBlacklistEntity(String ip,
+                                                           String attackType,
+                                                           String reason,
+                                                           int expireSeconds,
+                                                           String source,
+                                                           String remark) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime expireTime = expireSeconds <= 0 ? null : now.plusSeconds(expireSeconds);
-        long expireEpochMillis = toExpireEpochMillis(expireTime);
-        blacklistCache.merge(ip, expireEpochMillis, Math::max);
 
         SecurityIpBlacklistEntity entity = new SecurityIpBlacklistEntity();
         entity.setIp(ip);
@@ -281,14 +315,7 @@ public class IpAccessControlService {
         entity.setCreateTime(now);
         entity.setUpdateTime(now);
         entity.setRemark(remark);
-
-        blacklistPersistenceExecutor.execute(() -> {
-            try {
-                securityIpBlacklistMapper.upsert(entity);
-            } catch (Exception e) {
-                log.warn("异步持久化黑名单失败 ip={}, reason={}: {}", ip, reason, e.getMessage());
-            }
-        });
+        return entity;
     }
 
     @Scheduled(fixedDelay = 60_000)

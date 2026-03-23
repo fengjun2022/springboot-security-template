@@ -1,6 +1,7 @@
 package com.ssy.controller;
 
 import com.common.result.Result;
+import com.ssy.dto.UserEntity;
 import com.ssy.mapper.ApiEndpointMapper;
 import com.ssy.entity.SecurityAttackEventEntity;
 import com.ssy.entity.SecurityIpBlacklistEntity;
@@ -8,8 +9,10 @@ import com.ssy.entity.SecurityIpWhitelistEntity;
 import com.ssy.mapper.SecurityAttackEventMapper;
 import com.ssy.mapper.SecurityIpBlacklistMapper;
 import com.ssy.mapper.SecurityIpWhitelistMapper;
+import com.ssy.service.impl.AuditFieldDiffRecorderService;
 import com.ssy.service.impl.EndpointThreatCacheService;
 import com.ssy.service.impl.IpAccessControlService;
+import com.ssy.utils.AttackTypeLabelUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +30,7 @@ import java.util.Map;
  */
 @Api(tags = "异常识别管理")
 @RestController
-@RequestMapping("/api/threat-detection")
+@RequestMapping("/threat-detection")
 @PreAuthorize("hasAuthority('threat:admin:read') or hasAuthority('threat:admin:manage')")
 public class ThreatDetectionAdminController {
 
@@ -37,19 +40,22 @@ public class ThreatDetectionAdminController {
     private final ApiEndpointMapper apiEndpointMapper;
     private final IpAccessControlService ipAccessControlService;
     private final EndpointThreatCacheService endpointThreatCacheService;
+    private final AuditFieldDiffRecorderService auditFieldDiffRecorderService;
 
     public ThreatDetectionAdminController(SecurityAttackEventMapper securityAttackEventMapper,
                                           SecurityIpBlacklistMapper securityIpBlacklistMapper,
                                           SecurityIpWhitelistMapper securityIpWhitelistMapper,
                                           ApiEndpointMapper apiEndpointMapper,
                                           IpAccessControlService ipAccessControlService,
-                                          EndpointThreatCacheService endpointThreatCacheService) {
+                                          EndpointThreatCacheService endpointThreatCacheService,
+                                          AuditFieldDiffRecorderService auditFieldDiffRecorderService) {
         this.securityAttackEventMapper = securityAttackEventMapper;
         this.securityIpBlacklistMapper = securityIpBlacklistMapper;
         this.securityIpWhitelistMapper = securityIpWhitelistMapper;
         this.apiEndpointMapper = apiEndpointMapper;
         this.ipAccessControlService = ipAccessControlService;
         this.endpointThreatCacheService = endpointThreatCacheService;
+        this.auditFieldDiffRecorderService = auditFieldDiffRecorderService;
     }
 
     @ApiOperation("获取异常识别缓存状态")
@@ -66,7 +72,9 @@ public class ThreatDetectionAdminController {
     @GetMapping("/events/recent")
     public Result<List<SecurityAttackEventEntity>> recentEvents(@RequestParam(defaultValue = "100") int limit) {
         int safeLimit = Math.min(Math.max(limit, 1), 500);
-        return Result.success(securityAttackEventMapper.selectRecent(safeLimit));
+        List<SecurityAttackEventEntity> records = securityAttackEventMapper.selectRecent(safeLimit);
+        fillAttackTypeLabels(records);
+        return Result.success(records);
     }
 
     @ApiOperation("分页筛选攻击异常事件（按IP/类型/时间范围）")
@@ -90,7 +98,19 @@ public class ThreatDetectionAdminController {
         List<SecurityAttackEventEntity> records = securityAttackEventMapper.selectByPage(
                 offset, safeSize, ip, attackType, start, end
         );
+        fillAttackTypeLabels(records);
         return Result.success(new PageResult<>(records, total, safePage, safeSize));
+    }
+
+    private void fillAttackTypeLabels(List<SecurityAttackEventEntity> records) {
+        if (records == null || records.isEmpty()) {
+            return;
+        }
+        for (SecurityAttackEventEntity record : records) {
+            if (record != null) {
+                record.setAttackTypeLabel(AttackTypeLabelUtils.resolve(record.getAttackType()));
+            }
+        }
     }
 
     @ApiOperation("查询黑名单IP")
@@ -98,6 +118,21 @@ public class ThreatDetectionAdminController {
     public Result<List<SecurityIpBlacklistEntity>> blacklist(@RequestParam(defaultValue = "200") int limit) {
         int safeLimit = Math.min(Math.max(limit, 1), 1000);
         return Result.success(securityIpBlacklistMapper.selectRecent(safeLimit));
+    }
+
+    @ApiOperation("分页筛选黑名单IP")
+    @GetMapping("/blacklist/page")
+    public Result<PageResult<SecurityIpBlacklistEntity>> blacklistPage(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Integer status) {
+        int safePage = Math.max(page, 1);
+        int safeSize = Math.min(Math.max(size, 1), 200);
+        int offset = (safePage - 1) * safeSize;
+        int total = securityIpBlacklistMapper.countByCondition(keyword, status);
+        List<SecurityIpBlacklistEntity> records = securityIpBlacklistMapper.selectByPage(offset, safeSize, keyword, status);
+        return Result.success(new PageResult<>(records, total, safePage, safeSize));
     }
 
     @ApiOperation("手动拉黑IP")
@@ -109,7 +144,21 @@ public class ThreatDetectionAdminController {
         }
         int expireSeconds = dto.getExpireSeconds() == null ? 3600 : Math.max(dto.getExpireSeconds(), 0);
         String reason = dto.getReason() == null || dto.getReason().trim().isEmpty() ? "管理员手动拉黑" : dto.getReason().trim();
+        SecurityIpBlacklistEntity before = securityIpBlacklistMapper.selectRecent(1000).stream()
+                .filter(item -> dto.getIp().trim().equals(item.getIp()))
+                .findFirst().orElse(null);
         ipAccessControlService.manualBlockIp(dto.getIp().trim(), reason, expireSeconds);
+        SecurityIpBlacklistEntity after = securityIpBlacklistMapper.selectRecent(1000).stream()
+                .filter(item -> dto.getIp().trim().equals(item.getIp()))
+                .findFirst().orElse(null);
+        auditFieldDiffRecorderService.recordSecurityDiff(
+                "THREAT_DETECTION",
+                "BLOCK_IP",
+                "BLACKLIST_IP",
+                dto.getIp().trim(),
+                before,
+                after
+        );
         return Result.success("拉黑成功");
     }
 
@@ -120,7 +169,21 @@ public class ThreatDetectionAdminController {
         if (ip == null || ip.trim().isEmpty()) {
             return Result.error("IP不能为空");
         }
+        SecurityIpBlacklistEntity before = securityIpBlacklistMapper.selectRecent(1000).stream()
+                .filter(item -> ip.trim().equals(item.getIp()))
+                .findFirst().orElse(null);
         ipAccessControlService.removeFromBlacklist(ip.trim());
+        SecurityIpBlacklistEntity after = securityIpBlacklistMapper.selectRecent(1000).stream()
+                .filter(item -> ip.trim().equals(item.getIp()))
+                .findFirst().orElse(null);
+        auditFieldDiffRecorderService.recordSecurityDiff(
+                "THREAT_DETECTION",
+                "UNBLOCK_IP",
+                "BLACKLIST_IP",
+                ip.trim(),
+                before,
+                after
+        );
         return Result.success("解封成功");
     }
 
@@ -131,6 +194,21 @@ public class ThreatDetectionAdminController {
         return Result.success(securityIpWhitelistMapper.selectRecent(safeLimit));
     }
 
+    @ApiOperation("分页筛选白名单IP/CIDR")
+    @GetMapping("/whitelist/page")
+    public Result<PageResult<SecurityIpWhitelistEntity>> whitelistPage(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Integer status) {
+        int safePage = Math.max(page, 1);
+        int safeSize = Math.min(Math.max(size, 1), 200);
+        int offset = (safePage - 1) * safeSize;
+        int total = securityIpWhitelistMapper.countByCondition(keyword, status);
+        List<SecurityIpWhitelistEntity> records = securityIpWhitelistMapper.selectByPage(offset, safeSize, keyword, status);
+        return Result.success(new PageResult<>(records, total, safePage, safeSize));
+    }
+
     @ApiOperation("添加白名单IP/CIDR")
     @PreAuthorize("hasAuthority('threat:admin:manage')")
     @PostMapping("/whitelist")
@@ -138,7 +216,21 @@ public class ThreatDetectionAdminController {
         if (dto == null || dto.getIpOrCidr() == null || dto.getIpOrCidr().trim().isEmpty()) {
             return Result.error("白名单IP或CIDR不能为空");
         }
+        SecurityIpWhitelistEntity before = securityIpWhitelistMapper.selectRecent(1000).stream()
+                .filter(item -> dto.getIpOrCidr().trim().equals(item.getIpOrCidr()))
+                .findFirst().orElse(null);
         ipAccessControlService.addToWhitelist(dto.getIpOrCidr().trim(), dto.getRemark());
+        SecurityIpWhitelistEntity after = securityIpWhitelistMapper.selectRecent(1000).stream()
+                .filter(item -> dto.getIpOrCidr().trim().equals(item.getIpOrCidr()))
+                .findFirst().orElse(null);
+        auditFieldDiffRecorderService.recordSecurityDiff(
+                "THREAT_DETECTION",
+                "ADD_WHITELIST",
+                "WHITELIST_IP",
+                dto.getIpOrCidr().trim(),
+                before,
+                after
+        );
         return Result.success("添加白名单成功");
     }
 
@@ -149,7 +241,21 @@ public class ThreatDetectionAdminController {
         if (ipOrCidr == null || ipOrCidr.trim().isEmpty()) {
             return Result.error("白名单IP或CIDR不能为空");
         }
+        SecurityIpWhitelistEntity before = securityIpWhitelistMapper.selectRecent(1000).stream()
+                .filter(item -> ipOrCidr.trim().equals(item.getIpOrCidr()))
+                .findFirst().orElse(null);
         ipAccessControlService.removeFromWhitelist(ipOrCidr.trim());
+        SecurityIpWhitelistEntity after = securityIpWhitelistMapper.selectRecent(1000).stream()
+                .filter(item -> ipOrCidr.trim().equals(item.getIpOrCidr()))
+                .findFirst().orElse(null);
+        auditFieldDiffRecorderService.recordSecurityDiff(
+                "THREAT_DETECTION",
+                "REMOVE_WHITELIST",
+                "WHITELIST_IP",
+                ipOrCidr.trim(),
+                before,
+                after
+        );
         return Result.success("移除白名单成功");
     }
 

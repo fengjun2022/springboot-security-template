@@ -3,7 +3,7 @@ package com.ssy.service.impl;
 import com.ssy.entity.ApiEndpointEntity;
 import com.ssy.mapper.ApiEndpointMapper;
 import com.ssy.mapper.RbacPermissionEndpointRelMapper;
-import com.ssy.mapper.RbacPermissionEndpointRelMapper.EndpointPermissionCodeRow;
+import com.ssy.mapper.RbacPermissionEndpointRelMapper.EndpointPermissionBindingRow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -39,14 +39,20 @@ public class EndpointRbacCacheService {
         long start = System.currentTimeMillis();
 
         List<ApiEndpointEntity> endpoints = apiEndpointMapper.selectAll();
-        List<EndpointPermissionCodeRow> bindings = endpointRelMapper.selectAllActiveEndpointPermissionCodes();
-
         Map<Long, LinkedHashSet<String>> permissionMap = new HashMap<>();
-        for (EndpointPermissionCodeRow row : bindings) {
+        Map<Long, LinkedHashSet<String>> disabledPermissionMap = new HashMap<>();
+        List<EndpointPermissionBindingRow> bindings = endpointRelMapper.selectAllEndpointPermissionBindings();
+        for (EndpointPermissionBindingRow row : bindings) {
             if (row == null || row.getEndpointId() == null || !StringUtils.hasText(row.getPermCode())) {
                 continue;
             }
-            permissionMap.computeIfAbsent(row.getEndpointId(), k -> new LinkedHashSet<>()).add(row.getPermCode().trim());
+            boolean relEnabled = row.getRelStatus() == null || row.getRelStatus() == 1;
+            boolean permEnabled = row.getPermStatus() == null || row.getPermStatus() == 1;
+            if (relEnabled && permEnabled) {
+                permissionMap.computeIfAbsent(row.getEndpointId(), k -> new LinkedHashSet<>()).add(row.getPermCode().trim());
+            } else if (relEnabled) {
+                disabledPermissionMap.computeIfAbsent(row.getEndpointId(), k -> new LinkedHashSet<>()).add(row.getPermCode().trim());
+            }
         }
 
         Map<String, EndpointAccessRule> exactRules = new ConcurrentHashMap<>();
@@ -63,8 +69,11 @@ public class EndpointRbacCacheService {
             List<String> perms = permissionMap.containsKey(endpoint.getId())
                     ? Collections.unmodifiableList(new ArrayList<>(permissionMap.get(endpoint.getId())))
                     : Collections.emptyList();
+            List<String> disabledPerms = disabledPermissionMap.containsKey(endpoint.getId())
+                    ? Collections.unmodifiableList(new ArrayList<>(disabledPermissionMap.get(endpoint.getId())))
+                    : Collections.emptyList();
 
-            EndpointAccessRule rule = buildRule(endpoint, perms);
+            EndpointAccessRule rule = buildRule(endpoint, perms, disabledPerms);
             if (rule.isRequireAuth()) {
                 protectedCount++;
             }
@@ -114,7 +123,7 @@ public class EndpointRbacCacheService {
         return snapshot.exactRules.size() + patternSize;
     }
 
-    private EndpointAccessRule buildRule(ApiEndpointEntity endpoint, List<String> permissionCodes) {
+    private EndpointAccessRule buildRule(ApiEndpointEntity endpoint, List<String> permissionCodes, List<String> disabledPermissionCodes) {
         int status = endpoint.getStatus() == null ? 1 : endpoint.getStatus();
         boolean requireAuth = endpoint.getRequireAuth() != null && endpoint.getRequireAuth() == 1;
         if (!permissionCodes.isEmpty()) {
@@ -125,9 +134,12 @@ public class EndpointRbacCacheService {
                 endpoint.getId(),
                 normalizePath(endpoint.getPath()),
                 normalizeMethod(endpoint.getMethod()),
+                endpoint.getModuleGroup(),
+                endpoint.getDescription(),
                 status,
                 requireAuth,
-                permissionCodes
+                permissionCodes,
+                disabledPermissionCodes
         );
     }
 
@@ -195,22 +207,33 @@ public class EndpointRbacCacheService {
         private final Long endpointId;
         private final String path;
         private final String method;
+        private final String moduleGroup;
+        private final String description;
         private final int status;
         private final boolean requireAuth;
         private final List<String> permissionCodes;
+        private final List<String> disabledPermissionCodes;
 
-        public EndpointAccessRule(Long endpointId, String path, String method, int status,
-                                  boolean requireAuth, List<String> permissionCodes) {
+        public EndpointAccessRule(Long endpointId, String path, String method, String moduleGroup, String description,
+                                  int status, boolean requireAuth, List<String> permissionCodes,
+                                  List<String> disabledPermissionCodes) {
             this.endpointId = endpointId;
             this.path = path;
             this.method = method;
+            this.moduleGroup = moduleGroup;
+            this.description = description;
             this.status = status;
             this.requireAuth = requireAuth;
             this.permissionCodes = permissionCodes == null ? Collections.emptyList() : permissionCodes;
+            this.disabledPermissionCodes = disabledPermissionCodes == null ? Collections.emptyList() : disabledPermissionCodes;
         }
 
         public Long getEndpointId() {
             return endpointId;
+        }
+
+        public String getDescription() {
+            return description;
         }
 
         public String getPath() {
@@ -219,6 +242,10 @@ public class EndpointRbacCacheService {
 
         public String getMethod() {
             return method;
+        }
+
+        public String getModuleGroup() {
+            return moduleGroup;
         }
 
         public int getStatus() {
@@ -235,6 +262,14 @@ public class EndpointRbacCacheService {
 
         public boolean hasPermissionBindings() {
             return !permissionCodes.isEmpty();
+        }
+
+        public boolean hasOnlyDisabledPermissionBindings() {
+            return permissionCodes.isEmpty() && !disabledPermissionCodes.isEmpty();
+        }
+
+        public List<String> getDisabledPermissionCodes() {
+            return disabledPermissionCodes;
         }
     }
 

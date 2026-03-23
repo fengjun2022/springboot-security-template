@@ -20,6 +20,24 @@ public interface SecurityIpBlacklistMapper {
     @Select("SELECT * FROM security_ip_blacklist ORDER BY id DESC LIMIT #{limit}")
     List<SecurityIpBlacklistEntity> selectRecent(@Param("limit") int limit);
 
+    @Select("<script>" +
+            "SELECT COUNT(*) FROM security_ip_blacklist WHERE 1=1 " +
+            "<if test='keyword != null and keyword != \"\"'> AND (ip LIKE CONCAT('%', #{keyword}, '%') OR reason LIKE CONCAT('%', #{keyword}, '%'))</if>" +
+            "<if test='status != null'> AND status = #{status}</if>" +
+            "</script>")
+    int countByCondition(@Param("keyword") String keyword, @Param("status") Integer status);
+
+    @Select("<script>" +
+            "SELECT * FROM security_ip_blacklist WHERE 1=1 " +
+            "<if test='keyword != null and keyword != \"\"'> AND (ip LIKE CONCAT('%', #{keyword}, '%') OR reason LIKE CONCAT('%', #{keyword}, '%'))</if>" +
+            "<if test='status != null'> AND status = #{status}</if>" +
+            " ORDER BY id DESC LIMIT #{offset}, #{size}" +
+            "</script>")
+    List<SecurityIpBlacklistEntity> selectByPage(@Param("offset") int offset,
+                                                 @Param("size") int size,
+                                                 @Param("keyword") String keyword,
+                                                 @Param("status") Integer status);
+
     @Insert("INSERT INTO security_ip_blacklist " +
             "(ip, status, source, reason, attack_type, hit_count, first_hit_time, last_hit_time, expire_time, create_time, update_time, remark) " +
             "VALUES (#{ip}, 1, #{source}, #{reason}, #{attackType}, #{hitCount}, #{firstHitTime}, #{lastHitTime}, #{expireTime}, #{createTime}, #{updateTime}, #{remark}) " +

@@ -69,6 +69,20 @@ public class ApiEndpointController {
     }
 
     /**
+     * 获取所有接口列表（不分页，用于选择器）
+     */
+    @ApiOperation("获取所有接口列表")
+    @PreAuthorize("hasAuthority('api:endpoint:read')")
+    @GetMapping("/list")
+    public Result<List<ApiEndpointEntity>> listAllEndpoints() {
+        try {
+            return Result.success(apiEndpointService.getAllEndpoints());
+        } catch (Exception e) {
+            return Result.error("查询失败: " + e.getMessage());
+        }
+    }
+
+    /**
      * 获取所有模块分组
      */
     @ApiOperation("获取所有模块分组")

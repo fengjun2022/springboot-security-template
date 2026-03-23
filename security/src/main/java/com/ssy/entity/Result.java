@@ -57,5 +57,13 @@ public class Result<T> implements Serializable {
         return result;
     }
 
+    public static <T> Result<T> error(String msg, int code, T data) {
+        Result<T> result = new Result<T>();
+        result.msg = msg;
+        result.code = code;
+        result.data = data;
+        return result;
+    }
+
 
 }

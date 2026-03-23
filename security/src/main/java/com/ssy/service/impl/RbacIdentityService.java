@@ -3,6 +3,7 @@ package com.ssy.service.impl;
 import com.ssy.details.CustomUserDetails;
 import com.ssy.dto.UserEntity;
 import com.ssy.entity.ApiEndpointEntity;
+import com.ssy.entity.FrontendRouteEntity;
 import com.ssy.entity.RbacPermissionEntity;
 import com.ssy.entity.RbacRoleEntity;
 import com.ssy.entity.RbacRoleGrantRuleEntity;
@@ -32,8 +33,10 @@ public class RbacIdentityService {
     private final RbacRolePermissionMapper rbacRolePermissionMapper;
     private final RbacRoleGrantRuleMapper rbacRoleGrantRuleMapper;
     private final ApiEndpointMapper apiEndpointMapper;
+    private final FrontendRouteMapper frontendRouteMapper;
     private final EndpointRbacCacheService endpointRbacCacheService;
     private final UserPermissionCacheService userPermissionCacheService;
+    private final AuditFieldDiffRecorderService auditFieldDiffRecorderService;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -45,8 +48,10 @@ public class RbacIdentityService {
                                RbacRolePermissionMapper rbacRolePermissionMapper,
                                RbacRoleGrantRuleMapper rbacRoleGrantRuleMapper,
                                ApiEndpointMapper apiEndpointMapper,
+                               FrontendRouteMapper frontendRouteMapper,
                                EndpointRbacCacheService endpointRbacCacheService,
                                UserPermissionCacheService userPermissionCacheService,
+                               AuditFieldDiffRecorderService auditFieldDiffRecorderService,
                                PasswordEncoder passwordEncoder) {
         this.userMapper = userMapper;
         this.rbacRoleMapper = rbacRoleMapper;
@@ -56,8 +61,10 @@ public class RbacIdentityService {
         this.rbacRolePermissionMapper = rbacRolePermissionMapper;
         this.rbacRoleGrantRuleMapper = rbacRoleGrantRuleMapper;
         this.apiEndpointMapper = apiEndpointMapper;
+        this.frontendRouteMapper = frontendRouteMapper;
         this.endpointRbacCacheService = endpointRbacCacheService;
         this.userPermissionCacheService = userPermissionCacheService;
+        this.auditFieldDiffRecorderService = auditFieldDiffRecorderService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -134,8 +141,16 @@ public class RbacIdentityService {
         userMapper.insertBaseUser(user);
         rbacUserRoleMapper.insertUserRoles(user.getUserId(), extractRoleIds(targetRoles), "ADMIN");
         userPermissionCacheService.invalidateUser(user.getUserId());
-
-        return sanitizeUser(enrichUserWithRbac(userMapper.selectByUserId(user.getUserId())));
+        UserEntity created = sanitizeUser(enrichUserWithRbac(userMapper.selectByUserId(user.getUserId())));
+        auditFieldDiffRecorderService.recordBusinessDiff(
+                "IAM",
+                "CREATE_USER",
+                "USER",
+                String.valueOf(user.getUserId()),
+                null,
+                created
+        );
+        return created;
     }
 
     @Transactional
@@ -149,6 +164,7 @@ public class RbacIdentityService {
             throw new IllegalArgumentException("用户不存在");
         }
         target = enrichUserWithRbac(target);
+        UserEntity before = sanitizeUser(enrichUserWithRbac(userMapper.selectByUserId(userId)));
         ensureGrantAllowed(operator, resolveRolesByCodes(target.getRoles()), GrantAction.UPDATE_USER_OF_ROLE);
 
         if (StringUtils.hasText(cmd.getUsername())) {
@@ -169,8 +185,16 @@ public class RbacIdentityService {
         }
         userMapper.updateBaseUser(target);
         userPermissionCacheService.invalidateUser(userId);
-
-        return sanitizeUser(enrichUserWithRbac(userMapper.selectByUserId(userId)));
+        UserEntity after = sanitizeUser(enrichUserWithRbac(userMapper.selectByUserId(userId)));
+        auditFieldDiffRecorderService.recordBusinessDiff(
+                "IAM",
+                "UPDATE_USER",
+                "USER",
+                String.valueOf(userId),
+                before,
+                after
+        );
+        return after;
     }
 
     @Transactional
@@ -187,10 +211,20 @@ public class RbacIdentityService {
             throw new IllegalArgumentException("用户不存在");
         }
         target = enrichUserWithRbac(target);
+        UserEntity before = sanitizeUser(enrichUserWithRbac(userMapper.selectByUserId(userId)));
         ensureGrantAllowed(operator, resolveRolesByCodes(target.getRoles()), GrantAction.UPDATE_USER_OF_ROLE);
         userMapper.updateStatus(userId, status);
         userPermissionCacheService.invalidateUser(userId);
-        return sanitizeUser(enrichUserWithRbac(userMapper.selectByUserId(userId)));
+        UserEntity after = sanitizeUser(enrichUserWithRbac(userMapper.selectByUserId(userId)));
+        auditFieldDiffRecorderService.recordBusinessDiff(
+                "IAM",
+                "UPDATE_USER_STATUS",
+                "USER",
+                String.valueOf(userId),
+                before,
+                after
+        );
+        return after;
     }
 
     @Transactional
@@ -204,6 +238,7 @@ public class RbacIdentityService {
             throw new IllegalArgumentException("用户不存在");
         }
         target = enrichUserWithRbac(target);
+        UserEntity before = sanitizeUser(enrichUserWithRbac(userMapper.selectByUserId(userId)));
 
         List<RbacRoleEntity> newRoles = resolveRegisterRoles(roleCodes);
         List<RbacRoleEntity> currentRoles = resolveRolesByCodes(target.getRoles());
@@ -230,8 +265,16 @@ public class RbacIdentityService {
             rbacUserRoleMapper.insertUserRoles(userId, extractRoleIds(newRoles), "ADMIN");
         }
         userPermissionCacheService.invalidateUser(userId);
-
-        return sanitizeUser(enrichUserWithRbac(userMapper.selectByUserId(userId)));
+        UserEntity after = sanitizeUser(enrichUserWithRbac(userMapper.selectByUserId(userId)));
+        auditFieldDiffRecorderService.recordBusinessDiff(
+                "IAM",
+                "REPLACE_USER_ROLES",
+                "USER",
+                String.valueOf(userId),
+                before,
+                after
+        );
+        return after;
     }
 
     public List<RbacRoleEntity> listRoles() {
@@ -256,7 +299,16 @@ public class RbacIdentityService {
         entity.setUpdateTime(now);
         rbacRoleMapper.insert(entity);
         userPermissionCacheService.invalidateAll();
-        return rbacRoleMapper.selectById(entity.getId());
+        RbacRoleEntity created = rbacRoleMapper.selectById(entity.getId());
+        auditFieldDiffRecorderService.recordBusinessDiff(
+                "IAM",
+                "CREATE_ROLE",
+                "ROLE",
+                String.valueOf(entity.getId()),
+                null,
+                created
+        );
+        return created;
     }
 
     @Transactional
@@ -265,6 +317,7 @@ public class RbacIdentityService {
         if (exists == null) {
             throw new IllegalArgumentException("角色不存在");
         }
+        RbacRoleEntity before = rbacRoleMapper.selectById(roleId);
         exists.setRoleName(StringUtils.hasText(cmd.getRoleName()) ? cmd.getRoleName().trim() : null);
         exists.setStatus(cmd.getStatus());
         exists.setAllowSelfRegister(cmd.getAllowSelfRegister());
@@ -272,7 +325,16 @@ public class RbacIdentityService {
         exists.setUpdateTime(LocalDateTime.now());
         rbacRoleMapper.update(exists);
         userPermissionCacheService.invalidateAll();
-        return rbacRoleMapper.selectById(roleId);
+        RbacRoleEntity after = rbacRoleMapper.selectById(roleId);
+        auditFieldDiffRecorderService.recordBusinessDiff(
+                "IAM",
+                "UPDATE_ROLE",
+                "ROLE",
+                String.valueOf(roleId),
+                before,
+                after
+        );
+        return after;
     }
 
     public List<RbacPermissionEntity> listPermissions() {
@@ -296,7 +358,16 @@ public class RbacIdentityService {
         entity.setUpdateTime(now);
         rbacPermissionMapper.insert(entity);
         endpointRbacCacheService.refresh();
-        return rbacPermissionMapper.selectById(entity.getId());
+        RbacPermissionEntity created = rbacPermissionMapper.selectById(entity.getId());
+        auditFieldDiffRecorderService.recordBusinessDiff(
+                "IAM",
+                "CREATE_PERMISSION",
+                "PERMISSION",
+                String.valueOf(entity.getId()),
+                null,
+                created
+        );
+        return created;
     }
 
     @Transactional
@@ -305,6 +376,7 @@ public class RbacIdentityService {
         if (exists == null) {
             throw new IllegalArgumentException("权限不存在");
         }
+        RbacPermissionEntity before = rbacPermissionMapper.selectById(permissionId);
         exists.setPermName(StringUtils.hasText(cmd.getPermName()) ? cmd.getPermName().trim() : null);
         exists.setModuleGroup(cmd.getModuleGroup());
         exists.setStatus(cmd.getStatus());
@@ -313,12 +385,25 @@ public class RbacIdentityService {
         rbacPermissionMapper.update(exists);
         userPermissionCacheService.invalidateAll();
         endpointRbacCacheService.refresh();
-        return rbacPermissionMapper.selectById(permissionId);
+        RbacPermissionEntity after = rbacPermissionMapper.selectById(permissionId);
+        auditFieldDiffRecorderService.recordBusinessDiff(
+                "IAM",
+                "UPDATE_PERMISSION",
+                "PERMISSION",
+                String.valueOf(permissionId),
+                before,
+                after
+        );
+        return after;
     }
 
     public List<RbacPermissionEntity> listPermissionsByRole(Long roleId) {
         if (roleId == null) {
             return Collections.emptyList();
+        }
+        RbacRoleEntity role = rbacRoleMapper.selectById(roleId);
+        if (role != null && isSuperAdminRole(role.getRoleCode())) {
+            return rbacPermissionMapper.selectEnabledList();
         }
         return rbacPermissionMapper.selectByRoleId(roleId);
     }
@@ -332,13 +417,30 @@ public class RbacIdentityService {
         if (role == null) {
             throw new IllegalArgumentException("角色不存在");
         }
+        if (isSuperAdminRole(role.getRoleCode())) {
+            userPermissionCacheService.invalidateAll();
+            return rbacPermissionMapper.selectEnabledList();
+        }
+        Map<String, Object> before = new LinkedHashMap<>();
+        before.put("permissionCodes", listPermissionsByRole(roleId).stream().map(RbacPermissionEntity::getPermCode).collect(Collectors.toList()));
         List<RbacPermissionEntity> permissions = resolvePermissionsByCodes(permissionCodes);
         rbacRolePermissionMapper.deleteByRoleId(roleId);
         if (!permissions.isEmpty()) {
             rbacRolePermissionMapper.insertRolePermissions(roleId, extractPermissionIds(permissions));
         }
         userPermissionCacheService.invalidateAll();
-        return rbacPermissionMapper.selectByRoleId(roleId);
+        List<RbacPermissionEntity> result = rbacPermissionMapper.selectByRoleId(roleId);
+        Map<String, Object> after = new LinkedHashMap<>();
+        after.put("permissionCodes", result.stream().map(RbacPermissionEntity::getPermCode).collect(Collectors.toList()));
+        auditFieldDiffRecorderService.recordBusinessDiff(
+                "IAM",
+                "REPLACE_ROLE_PERMISSIONS",
+                "ROLE",
+                String.valueOf(roleId),
+                before,
+                after
+        );
+        return result;
     }
 
     public List<RbacPermissionEntity> listPermissionsByEndpoint(Long endpointId) {
@@ -368,6 +470,76 @@ public class RbacIdentityService {
         }
         endpointRbacCacheService.refresh();
         return rbacPermissionEndpointRelMapper.selectEnabledPermissionsByEndpointId(endpointId);
+    }
+
+    public List<ApiEndpointEntity> listEndpointsByPermission(Long permissionId) {
+        if (permissionId == null) {
+            return Collections.emptyList();
+        }
+        return rbacPermissionEndpointRelMapper.selectEndpointsByPermissionId(permissionId);
+    }
+
+    public List<ApiEndpointEntity> listAvailableEndpointsForPermission(Long permissionId) {
+        List<ApiEndpointEntity> allEndpoints = apiEndpointMapper.selectAll();
+        if (allEndpoints == null || allEndpoints.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Set<Long> currentPermissionEndpointIds = Collections.emptySet();
+        if (permissionId != null) {
+            RbacPermissionEntity permission = rbacPermissionMapper.selectById(permissionId);
+            if (permission == null) {
+                throw new IllegalArgumentException("权限不存在");
+            }
+            currentPermissionEndpointIds = rbacPermissionEndpointRelMapper.selectEndpointsByPermissionId(permissionId)
+                    .stream()
+                    .map(ApiEndpointEntity::getId)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+        }
+
+        Set<Long> boundEndpointIds = rbacPermissionEndpointRelMapper.selectAllActiveEndpointPermissionCodes()
+                .stream()
+                .map(RbacPermissionEndpointRelMapper.EndpointPermissionCodeRow::getEndpointId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        Set<Long> finalCurrentPermissionEndpointIds = currentPermissionEndpointIds;
+        return allEndpoints.stream()
+                .filter(endpoint -> endpoint.getId() != null)
+                .filter(endpoint -> !boundEndpointIds.contains(endpoint.getId())
+                        || finalCurrentPermissionEndpointIds.contains(endpoint.getId()))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<ApiEndpointEntity> replacePermissionEndpoints(Long permissionId, List<Long> endpointIds) {
+        if (permissionId == null) {
+            throw new IllegalArgumentException("permissionId不能为空");
+        }
+        RbacPermissionEntity permission = rbacPermissionMapper.selectById(permissionId);
+        if (permission == null) {
+            throw new IllegalArgumentException("权限不存在");
+        }
+        // 验证所有 endpointId 存在
+        if (endpointIds != null && !endpointIds.isEmpty()) {
+            for (Long endpointId : endpointIds) {
+                if (apiEndpointMapper.selectById(endpointId) == null) {
+                    throw new IllegalArgumentException("接口不存在: id=" + endpointId);
+                }
+            }
+        }
+        rbacPermissionEndpointRelMapper.deleteByPermissionId(permissionId);
+        if (endpointIds != null && !endpointIds.isEmpty()) {
+            rbacPermissionEndpointRelMapper.insertPermissionEndpoints(
+                    permissionId,
+                    endpointIds,
+                    "权限绑定接口",
+                    LocalDateTime.now()
+            );
+        }
+        endpointRbacCacheService.refresh();
+        return rbacPermissionEndpointRelMapper.selectEndpointsByPermissionId(permissionId);
     }
 
     @Transactional
@@ -420,6 +592,108 @@ public class RbacIdentityService {
 
     public List<RbacRoleGrantRuleEntity> listGrantRules() {
         return rbacRoleGrantRuleMapper.selectAllWithRoleNames();
+    }
+
+    public List<FrontendRouteEntity> listFrontendRoutes() {
+        return buildFrontendRouteTree(frontendRouteMapper.selectAll(), false, Collections.emptySet());
+    }
+
+    public List<FrontendRouteEntity> listCurrentUserFrontendRoutes() {
+        UserEntity currentUser = requireCurrentUser();
+        Set<String> permissionCodes = currentUser.getPermissions() == null
+                ? Collections.emptySet()
+                : currentUser.getPermissions().stream()
+                .filter(StringUtils::hasText)
+                .map(String::trim)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        return buildFrontendRouteTree(frontendRouteMapper.selectEnabledList(), true, permissionCodes);
+    }
+
+    @Transactional
+    public FrontendRouteEntity createFrontendRoute(CreateFrontendRouteCommand cmd) {
+        validateFrontendRouteCommand(cmd, null);
+        if (frontendRouteMapper.selectByRouteName(cmd.getRouteName().trim()) != null) {
+            throw new IllegalArgumentException("前端资源名称已存在");
+        }
+        LocalDateTime now = LocalDateTime.now();
+        FrontendRouteEntity entity = new FrontendRouteEntity();
+        entity.setParentId(cmd.getParentId());
+        entity.setRouteName(cmd.getRouteName().trim());
+        entity.setRoutePath(blankToNull(cmd.getRoutePath()));
+        entity.setComponent(blankToNull(cmd.getComponent()));
+        entity.setRedirectPath(blankToNull(cmd.getRedirectPath()));
+        entity.setTitle(requiredText(cmd.getTitle(), "资源标题不能为空"));
+        entity.setIcon(blankToNull(cmd.getIcon()));
+        entity.setResourceType(normalizeResourceType(cmd.getResourceType()));
+        entity.setPermissionCode(normalizePermissionCode(cmd.getPermissionCode()));
+        entity.setStatus(cmd.getStatus() == null ? 1 : cmd.getStatus());
+        entity.setVisible(cmd.getVisible() == null ? 1 : cmd.getVisible());
+        entity.setSort(cmd.getSort() == null ? 0 : cmd.getSort());
+        entity.setKeepAlive(cmd.getKeepAlive() == null ? 0 : cmd.getKeepAlive());
+        entity.setAlwaysShow(cmd.getAlwaysShow() == null ? 0 : cmd.getAlwaysShow());
+        entity.setIgnoreAuth(cmd.getIgnoreAuth() == null ? 0 : cmd.getIgnoreAuth());
+        entity.setActiveMenu(blankToNull(cmd.getActiveMenu()));
+        entity.setRemark(blankToNull(cmd.getRemark()));
+        entity.setCreateTime(now);
+        entity.setUpdateTime(now);
+        frontendRouteMapper.insert(entity);
+        FrontendRouteEntity created = frontendRouteMapper.selectById(entity.getId());
+        auditFieldDiffRecorderService.recordBusinessDiff(
+                "IAM",
+                "CREATE_FRONTEND_ROUTE",
+                "FRONTEND_ROUTE",
+                String.valueOf(entity.getId()),
+                null,
+                created
+        );
+        return created;
+    }
+
+    @Transactional
+    public FrontendRouteEntity updateFrontendRoute(Long routeId, UpdateFrontendRouteCommand cmd) {
+        if (routeId == null) {
+            throw new IllegalArgumentException("routeId不能为空");
+        }
+        FrontendRouteEntity exists = frontendRouteMapper.selectById(routeId);
+        if (exists == null) {
+            throw new IllegalArgumentException("前端资源不存在");
+        }
+        FrontendRouteEntity before = frontendRouteMapper.selectById(routeId);
+        validateFrontendRouteCommand(cmd, routeId);
+        String routeName = requiredText(cmd.getRouteName(), "前端资源名称不能为空").trim();
+        FrontendRouteEntity sameNameRoute = frontendRouteMapper.selectByRouteName(routeName);
+        if (sameNameRoute != null && !routeId.equals(sameNameRoute.getId())) {
+            throw new IllegalArgumentException("前端资源名称已存在");
+        }
+        exists.setParentId(cmd.getParentId());
+        exists.setRouteName(routeName);
+        exists.setRoutePath(blankToNull(cmd.getRoutePath()));
+        exists.setComponent(blankToNull(cmd.getComponent()));
+        exists.setRedirectPath(blankToNull(cmd.getRedirectPath()));
+        exists.setTitle(requiredText(cmd.getTitle(), "资源标题不能为空"));
+        exists.setIcon(blankToNull(cmd.getIcon()));
+        exists.setResourceType(normalizeResourceType(cmd.getResourceType()));
+        exists.setPermissionCode(normalizePermissionCode(cmd.getPermissionCode()));
+        exists.setStatus(cmd.getStatus());
+        exists.setVisible(cmd.getVisible());
+        exists.setSort(cmd.getSort());
+        exists.setKeepAlive(cmd.getKeepAlive());
+        exists.setAlwaysShow(cmd.getAlwaysShow());
+        exists.setIgnoreAuth(cmd.getIgnoreAuth());
+        exists.setActiveMenu(blankToNull(cmd.getActiveMenu()));
+        exists.setRemark(blankToNull(cmd.getRemark()));
+        exists.setUpdateTime(LocalDateTime.now());
+        frontendRouteMapper.update(exists);
+        FrontendRouteEntity after = frontendRouteMapper.selectById(routeId);
+        auditFieldDiffRecorderService.recordBusinessDiff(
+                "IAM",
+                "UPDATE_FRONTEND_ROUTE",
+                "FRONTEND_ROUTE",
+                String.valueOf(routeId),
+                before,
+                after
+        );
+        return after;
     }
 
     @Transactional
@@ -480,8 +754,11 @@ public class RbacIdentityService {
             return user;
         }
         List<RbacRoleEntity> roles = rbacRoleMapper.selectEnabledByUserId(user.getUserId());
-        List<RbacPermissionEntity> permissions = rbacPermissionMapper.selectEnabledByUserId(user.getUserId());
-        user.setRoles(roles.stream().map(RbacRoleEntity::getRoleCode).collect(Collectors.toList()));
+        List<String> roleCodes = roles.stream().map(RbacRoleEntity::getRoleCode).collect(Collectors.toList());
+        List<RbacPermissionEntity> permissions = isSuperAdminRoles(roleCodes)
+                ? rbacPermissionMapper.selectEnabledList()
+                : rbacPermissionMapper.selectEnabledByUserId(user.getUserId());
+        user.setRoles(roleCodes);
         user.setPermissions(permissions.stream().map(RbacPermissionEntity::getPermCode).collect(Collectors.toList()));
         return user;
     }
@@ -577,6 +854,9 @@ public class RbacIdentityService {
         if (operatorRoleCodes.isEmpty()) {
             throw new IllegalArgumentException("当前账号没有角色，无法执行角色授权相关操作");
         }
+        if (isSuperAdminRoles(operatorRoleCodes)) {
+            return;
+        }
         List<RbacRoleEntity> operatorRoles = resolveRolesByCodes(operatorRoleCodes);
         Map<String, RbacRoleGrantRuleEntity> ruleMap = rbacRoleGrantRuleMapper.selectEnabledWithRoleNames().stream()
                 .collect(Collectors.toMap(
@@ -618,6 +898,172 @@ public class RbacIdentityService {
         }
     }
 
+    private List<FrontendRouteEntity> buildFrontendRouteTree(List<FrontendRouteEntity> flatRoutes,
+                                                             boolean filterByPermission,
+                                                             Set<String> permissionCodes) {
+        if (flatRoutes == null || flatRoutes.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Map<Long, FrontendRouteEntity> routeMap = new LinkedHashMap<>();
+        for (FrontendRouteEntity route : flatRoutes) {
+            FrontendRouteEntity copy = copyFrontendRoute(route);
+            routeMap.put(copy.getId(), copy);
+        }
+
+        List<FrontendRouteEntity> roots = new ArrayList<>();
+        for (FrontendRouteEntity route : routeMap.values()) {
+            Long parentId = route.getParentId();
+            if (parentId == null || !routeMap.containsKey(parentId)) {
+                roots.add(route);
+                continue;
+            }
+            routeMap.get(parentId).getChildren().add(route);
+        }
+
+        Comparator<FrontendRouteEntity> comparator = Comparator
+                .comparing((FrontendRouteEntity item) -> item.getSort() == null ? 0 : item.getSort())
+                .thenComparing(item -> item.getId() == null ? 0L : item.getId());
+        sortFrontendRouteTree(roots, comparator);
+
+        if (!filterByPermission) {
+            return roots;
+        }
+
+        List<FrontendRouteEntity> filtered = new ArrayList<>();
+        for (FrontendRouteEntity root : roots) {
+            FrontendRouteEntity visibleRoot = filterFrontendRoute(root, permissionCodes);
+            if (visibleRoot != null) {
+                filtered.add(visibleRoot);
+            }
+        }
+        return filtered;
+    }
+
+    private void sortFrontendRouteTree(List<FrontendRouteEntity> routes,
+                                       Comparator<FrontendRouteEntity> comparator) {
+        routes.sort(comparator);
+        for (FrontendRouteEntity route : routes) {
+            if (route.getChildren() != null && !route.getChildren().isEmpty()) {
+                sortFrontendRouteTree(route.getChildren(), comparator);
+            }
+        }
+    }
+
+    private FrontendRouteEntity filterFrontendRoute(FrontendRouteEntity route, Set<String> permissionCodes) {
+        List<FrontendRouteEntity> visibleChildren = new ArrayList<>();
+        for (FrontendRouteEntity child : route.getChildren()) {
+            FrontendRouteEntity visibleChild = filterFrontendRoute(child, permissionCodes);
+            if (visibleChild != null) {
+                visibleChildren.add(visibleChild);
+            }
+        }
+        route.setChildren(visibleChildren);
+
+        boolean allowed = isFrontendRouteVisible(route, permissionCodes);
+        if ("BUTTON".equalsIgnoreCase(route.getResourceType())) {
+            return allowed ? route : null;
+        }
+        if ("DIRECTORY".equalsIgnoreCase(route.getResourceType())) {
+            return visibleChildren.isEmpty() ? null : route;
+        }
+        if (allowed || !visibleChildren.isEmpty()) {
+            return route;
+        }
+        return null;
+    }
+
+    private boolean isFrontendRouteVisible(FrontendRouteEntity route, Set<String> permissionCodes) {
+        if (route.getIgnoreAuth() != null && route.getIgnoreAuth() == 1) {
+            return true;
+        }
+        if (!StringUtils.hasText(route.getPermissionCode())) {
+            return true;
+        }
+        return permissionCodes.contains(route.getPermissionCode().trim());
+    }
+
+    private FrontendRouteEntity copyFrontendRoute(FrontendRouteEntity source) {
+        FrontendRouteEntity target = new FrontendRouteEntity();
+        target.setId(source.getId());
+        target.setParentId(source.getParentId());
+        target.setRouteName(source.getRouteName());
+        target.setRoutePath(source.getRoutePath());
+        target.setComponent(source.getComponent());
+        target.setRedirectPath(source.getRedirectPath());
+        target.setTitle(source.getTitle());
+        target.setIcon(source.getIcon());
+        target.setResourceType(source.getResourceType());
+        target.setPermissionCode(source.getPermissionCode());
+        target.setStatus(source.getStatus());
+        target.setVisible(source.getVisible());
+        target.setSort(source.getSort());
+        target.setKeepAlive(source.getKeepAlive());
+        target.setAlwaysShow(source.getAlwaysShow());
+        target.setIgnoreAuth(source.getIgnoreAuth());
+        target.setActiveMenu(source.getActiveMenu());
+        target.setRemark(source.getRemark());
+        target.setCreateTime(source.getCreateTime());
+        target.setUpdateTime(source.getUpdateTime());
+        target.setChildren(new ArrayList<>());
+        return target;
+    }
+
+    private void validateFrontendRouteCommand(BaseFrontendRouteCommand cmd, Long routeId) {
+        if (cmd == null) {
+            throw new IllegalArgumentException("前端资源参数不能为空");
+        }
+        if (!StringUtils.hasText(cmd.getRouteName()) && routeId == null) {
+            throw new IllegalArgumentException("前端资源名称不能为空");
+        }
+        String resourceType = normalizeResourceType(cmd.getResourceType());
+        if (!"BUTTON".equals(resourceType) && !StringUtils.hasText(cmd.getRoutePath())) {
+            throw new IllegalArgumentException("路由路径不能为空");
+        }
+        if (!"BUTTON".equals(resourceType) && !StringUtils.hasText(cmd.getComponent())) {
+            throw new IllegalArgumentException("组件标识不能为空");
+        }
+        if ("BUTTON".equals(resourceType) && !StringUtils.hasText(cmd.getPermissionCode())) {
+            throw new IllegalArgumentException("按钮资源必须绑定权限编码");
+        }
+        if (cmd.getParentId() != null) {
+            FrontendRouteEntity parent = frontendRouteMapper.selectById(cmd.getParentId());
+            if (parent == null) {
+                throw new IllegalArgumentException("父级前端资源不存在");
+            }
+            if (routeId != null && routeId.equals(cmd.getParentId())) {
+                throw new IllegalArgumentException("父级资源不能是自己");
+            }
+            if ("BUTTON".equalsIgnoreCase(parent.getResourceType())) {
+                throw new IllegalArgumentException("按钮资源不能作为父级");
+            }
+        }
+        if (StringUtils.hasText(cmd.getPermissionCode())) {
+            RbacPermissionEntity permission = rbacPermissionMapper.selectByCode(cmd.getPermissionCode().trim());
+            if (permission == null) {
+                throw new IllegalArgumentException("绑定的权限编码不存在: " + cmd.getPermissionCode());
+            }
+        }
+    }
+
+    private String normalizeResourceType(String resourceType) {
+        if (!StringUtils.hasText(resourceType)) {
+            throw new IllegalArgumentException("资源类型不能为空");
+        }
+        String normalized = resourceType.trim().toUpperCase(Locale.ROOT);
+        if (!Arrays.asList("DIRECTORY", "MENU", "BUTTON").contains(normalized)) {
+            throw new IllegalArgumentException("资源类型不合法: " + resourceType);
+        }
+        return normalized;
+    }
+
+    private String normalizePermissionCode(String permissionCode) {
+        return StringUtils.hasText(permissionCode) ? permissionCode.trim() : null;
+    }
+
+    private String blankToNull(String value) {
+        return StringUtils.hasText(value) ? value.trim() : null;
+    }
+
     private List<String> normalizeRoleCodes(Collection<String> roleCodes) {
         if (roleCodes == null) {
             return new ArrayList<>();
@@ -644,6 +1090,17 @@ public class RbacIdentityService {
             normalized = normalized.substring(5);
         }
         return normalized;
+    }
+
+    private boolean isSuperAdminRoles(Collection<String> roleCodes) {
+        if (roleCodes == null || roleCodes.isEmpty()) {
+            return false;
+        }
+        return roleCodes.stream().anyMatch(this::isSuperAdminRole);
+    }
+
+    private boolean isSuperAdminRole(String roleCode) {
+        return "SUPER_ADMIN".equalsIgnoreCase(roleCode == null ? null : roleCode.trim());
     }
 
     private List<String> normalizePermissionCodes(Collection<String> permissionCodes) {
@@ -802,6 +1259,67 @@ public class RbacIdentityService {
         public void setStatus(Integer status) { this.status = status; }
         public String getRemark() { return remark; }
         public void setRemark(String remark) { this.remark = remark; }
+    }
+
+    public static class BaseFrontendRouteCommand {
+        private Long parentId;
+        private String routeName;
+        private String routePath;
+        private String component;
+        private String redirectPath;
+        private String title;
+        private String icon;
+        private String resourceType;
+        private String permissionCode;
+        private Integer status;
+        private Integer visible;
+        private Integer sort;
+        private Integer keepAlive;
+        private Integer alwaysShow;
+        private Integer ignoreAuth;
+        private String activeMenu;
+        private String remark;
+
+        public Long getParentId() { return parentId; }
+        public void setParentId(Long parentId) { this.parentId = parentId; }
+        public String getRouteName() { return routeName; }
+        public void setRouteName(String routeName) { this.routeName = routeName; }
+        public String getRoutePath() { return routePath; }
+        public void setRoutePath(String routePath) { this.routePath = routePath; }
+        public String getComponent() { return component; }
+        public void setComponent(String component) { this.component = component; }
+        public String getRedirectPath() { return redirectPath; }
+        public void setRedirectPath(String redirectPath) { this.redirectPath = redirectPath; }
+        public String getTitle() { return title; }
+        public void setTitle(String title) { this.title = title; }
+        public String getIcon() { return icon; }
+        public void setIcon(String icon) { this.icon = icon; }
+        public String getResourceType() { return resourceType; }
+        public void setResourceType(String resourceType) { this.resourceType = resourceType; }
+        public String getPermissionCode() { return permissionCode; }
+        public void setPermissionCode(String permissionCode) { this.permissionCode = permissionCode; }
+        public Integer getStatus() { return status; }
+        public void setStatus(Integer status) { this.status = status; }
+        public Integer getVisible() { return visible; }
+        public void setVisible(Integer visible) { this.visible = visible; }
+        public Integer getSort() { return sort; }
+        public void setSort(Integer sort) { this.sort = sort; }
+        public Integer getKeepAlive() { return keepAlive; }
+        public void setKeepAlive(Integer keepAlive) { this.keepAlive = keepAlive; }
+        public Integer getAlwaysShow() { return alwaysShow; }
+        public void setAlwaysShow(Integer alwaysShow) { this.alwaysShow = alwaysShow; }
+        public Integer getIgnoreAuth() { return ignoreAuth; }
+        public void setIgnoreAuth(Integer ignoreAuth) { this.ignoreAuth = ignoreAuth; }
+        public String getActiveMenu() { return activeMenu; }
+        public void setActiveMenu(String activeMenu) { this.activeMenu = activeMenu; }
+        public String getRemark() { return remark; }
+        public void setRemark(String remark) { this.remark = remark; }
+    }
+
+    public static class CreateFrontendRouteCommand extends BaseFrontendRouteCommand {
+    }
+
+    public static class UpdateFrontendRouteCommand extends BaseFrontendRouteCommand {
     }
 
     public static class UpdatePermissionCommand {

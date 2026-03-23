@@ -34,4 +34,5 @@ public class UserEntity extends com.pojo.entity.UserEntity {
       * 标准RBAC权限编码集合（如 iam:user:create）
       */
      private Collection<String> permissions;
+     private String packetSecret;
 }

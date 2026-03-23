@@ -24,11 +24,23 @@ public interface RbacPermissionEndpointRelMapper {
             "WHERE rel.status = 1 AND p.status = 1")
     List<EndpointPermissionCodeRow> selectAllActiveEndpointPermissionCodes();
 
+    @Select("SELECT rel.endpoint_id AS endpointId, p.perm_code AS permCode, " +
+            "rel.status AS relStatus, p.status AS permStatus " +
+            "FROM sys_permission_endpoint_rel rel " +
+            "JOIN sys_permission p ON p.id = rel.permission_id")
+    List<EndpointPermissionBindingRow> selectAllEndpointPermissionBindings();
+
     @Delete("DELETE FROM sys_permission_endpoint_rel WHERE endpoint_id = #{endpointId}")
     int deleteByEndpointId(@Param("endpointId") Long endpointId);
 
     @Delete("DELETE FROM sys_permission_endpoint_rel WHERE permission_id = #{permissionId}")
     int deleteByPermissionId(@Param("permissionId") Long permissionId);
+
+    @Select("SELECT e.* FROM api_endpoints e " +
+            "JOIN sys_permission_endpoint_rel rel ON rel.endpoint_id = e.id " +
+            "WHERE rel.permission_id = #{permissionId} AND rel.status = 1 " +
+            "ORDER BY e.controller_class, e.path")
+    List<com.ssy.entity.ApiEndpointEntity> selectEndpointsByPermissionId(@Param("permissionId") Long permissionId);
 
     @Insert("<script>" +
             "INSERT IGNORE INTO sys_permission_endpoint_rel (permission_id, endpoint_id, status, remark, create_time, update_time) VALUES " +
@@ -38,6 +50,17 @@ public interface RbacPermissionEndpointRelMapper {
             "</script>")
     int insertEndpointPermissions(@Param("endpointId") Long endpointId,
                                   @Param("permissionIds") List<Long> permissionIds,
+                                  @Param("remark") String remark,
+                                  @Param("now") LocalDateTime now);
+
+    @Insert("<script>" +
+            "INSERT IGNORE INTO sys_permission_endpoint_rel (permission_id, endpoint_id, status, remark, create_time, update_time) VALUES " +
+            "<foreach collection='endpointIds' item='endpointId' separator=','>" +
+            "(#{permissionId}, #{endpointId}, 1, #{remark}, #{now}, #{now})" +
+            "</foreach>" +
+            "</script>")
+    int insertPermissionEndpoints(@Param("permissionId") Long permissionId,
+                                  @Param("endpointIds") List<Long> endpointIds,
                                   @Param("remark") String remark,
                                   @Param("now") LocalDateTime now);
 
@@ -62,6 +85,45 @@ public interface RbacPermissionEndpointRelMapper {
 
         public void setPermCode(String permCode) {
             this.permCode = permCode;
+        }
+    }
+
+    class EndpointPermissionBindingRow {
+        private Long endpointId;
+        private String permCode;
+        private Integer relStatus;
+        private Integer permStatus;
+
+        public Long getEndpointId() {
+            return endpointId;
+        }
+
+        public void setEndpointId(Long endpointId) {
+            this.endpointId = endpointId;
+        }
+
+        public String getPermCode() {
+            return permCode;
+        }
+
+        public void setPermCode(String permCode) {
+            this.permCode = permCode;
+        }
+
+        public Integer getRelStatus() {
+            return relStatus;
+        }
+
+        public void setRelStatus(Integer relStatus) {
+            this.relStatus = relStatus;
+        }
+
+        public Integer getPermStatus() {
+            return permStatus;
+        }
+
+        public void setPermStatus(Integer permStatus) {
+            this.permStatus = permStatus;
         }
     }
 }

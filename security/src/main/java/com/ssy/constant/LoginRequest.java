@@ -13,6 +13,9 @@ package com.ssy.constant;
 public class LoginRequest {
     private String username;
     private String password;
+    private String captchaToken;
+    private String captchaCode;
+    private String browserFingerprint;
 
     // getter 和 setter 方法
     public String getUsername() {
@@ -30,4 +33,29 @@ public class LoginRequest {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getCaptchaToken() {
+        return captchaToken;
+    }
+
+    public void setCaptchaToken(String captchaToken) {
+        this.captchaToken = captchaToken;
+    }
+
+    public String getCaptchaCode() {
+        return captchaCode;
+    }
+
+    public void setCaptchaCode(String captchaCode) {
+        this.captchaCode = captchaCode;
+    }
+
+    public String getBrowserFingerprint() {
+        return browserFingerprint;
+    }
+
+    public void setBrowserFingerprint(String browserFingerprint) {
+        this.browserFingerprint = browserFingerprint;
+    }
+
 }

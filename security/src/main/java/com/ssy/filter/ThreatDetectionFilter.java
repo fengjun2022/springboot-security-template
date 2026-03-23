@@ -47,8 +47,14 @@ public class ThreatDetectionFilter extends OncePerRequestFilter {
     private static final Pattern XSS_PATTERN = Pattern.compile(
             "(?i)(<\\s*script|javascript:|onerror\\s*=|onload\\s*=|<\\s*img[^>]+onerror)"
     );
+    private static final Pattern JS_INJECTION_PATTERN = Pattern.compile(
+            "(?i)(document\\.cookie|document\\.write\\(|createElement\\(['\"]script|eval\\(|new\\s+function\\(|setTimeout\\(['\"])"
+    );
     private static final Pattern PATH_TRAVERSAL_PATTERN = Pattern.compile(
             "(?i)(\\.\\./|\\.\\.\\\\|%2e%2e%2f|%2e%2e/|%252e%252e)"
+    );
+    private static final Pattern TOOL_UA_PATTERN = Pattern.compile(
+            "(?i)(sqlmap|nikto|nmap|masscan|zgrab|curl|python-requests|gobuster|dirbuster|whatweb|httpx|postmanruntime)"
     );
 
     private static final Set<String> LIGHT_SKIP_PREFIXES = new HashSet<>(Arrays.asList(
@@ -193,9 +199,18 @@ public class ThreatDetectionFilter extends OncePerRequestFilter {
             return BlockDecision.block("SCANNER_PROBE",
                     "检测到疑似扫描/探测路径",
                     "建议检查该IP近期请求轨迹，必要时加入永久黑名单",
-                    HttpServletResponse.SC_FORBIDDEN,
+                    HttpServletResponse.SC_NOT_FOUND,
                     false,
                     65);
+        }
+
+        if (isDependencyProbePath(lowerPath)) {
+            return BlockDecision.block("DEPENDENCY_PROBE",
+                    "检测到依赖/敏感文件探测行为",
+                    "建议检查是否存在源码、依赖清单或构建文件泄露风险",
+                    HttpServletResponse.SC_NOT_FOUND,
+                    false,
+                    72);
         }
 
         String queryToCheck = queryString == null ? "" : queryString;
@@ -217,6 +232,25 @@ public class ThreatDetectionFilter extends OncePerRequestFilter {
                     HttpServletResponse.SC_FORBIDDEN,
                     false,
                     88);
+        }
+
+        if (JS_INJECTION_PATTERN.matcher(queryToCheck).find() || (bodySample != null && JS_INJECTION_PATTERN.matcher(bodySample).find())) {
+            return BlockDecision.block("JS_INJECTION",
+                    "检测到前端脚本注入特征",
+                    "建议检查前端模板注入、DOM 直写和 CSP 配置",
+                    HttpServletResponse.SC_FORBIDDEN,
+                    false,
+                    86);
+        }
+
+        String userAgent = request.getHeader("User-Agent");
+        if (StringUtils.hasText(userAgent) && TOOL_UA_PATTERN.matcher(userAgent).find()) {
+            return BlockDecision.block("AUTOMATION_TOOL",
+                    "检测到自动化扫描工具特征",
+                    "建议排查该IP是否在进行接口扫描、爆破或注入测试",
+                    HttpServletResponse.SC_NOT_FOUND,
+                    true,
+                    91);
         }
 
         // 粗粒度越权探测：高频访问明显管理端路径且未携带认证头（后续可结合401/403埋点增强）
@@ -249,6 +283,9 @@ public class ThreatDetectionFilter extends OncePerRequestFilter {
         event.setEndpointId(endpointRule == null ? null : endpointRule.getEndpointId());
         event.setUsername(resolveUsername());
         event.setAppId(request.getHeader("appid"));
+        event.setClientTool(resolveClientTool(request.getHeader("User-Agent")));
+        event.setBrowserFingerprint(trim(request.getHeader("X-Browser-Fingerprint"), 128));
+        event.setBrowserTrusted(resolveBrowserTrusted(request.getHeader("User-Agent"), request.getHeader("X-Browser-Fingerprint")));
         event.setUserAgent(trim(request.getHeader("User-Agent"), 1000));
         event.setReferer(trim(request.getHeader("Referer"), 1000));
         event.setQueryString(trim(request.getQueryString(), 2000));
@@ -281,6 +318,9 @@ public class ThreatDetectionFilter extends OncePerRequestFilter {
         event.setEndpointId(endpointRule == null ? null : endpointRule.getEndpointId());
         event.setUsername(resolveUsername());
         event.setAppId(request.getHeader("appid"));
+        event.setClientTool(resolveClientTool(request.getHeader("User-Agent")));
+        event.setBrowserFingerprint(trim(request.getHeader("X-Browser-Fingerprint"), 128));
+        event.setBrowserTrusted(resolveBrowserTrusted(request.getHeader("User-Agent"), request.getHeader("X-Browser-Fingerprint")));
         event.setUserAgent(trim(request.getHeader("User-Agent"), 1000));
         event.setReferer(trim(request.getHeader("Referer"), 1000));
         event.setQueryString(trim(request.getQueryString(), 2000));
@@ -415,6 +455,19 @@ public class ThreatDetectionFilter extends OncePerRequestFilter {
         return false;
     }
 
+    private boolean isDependencyProbePath(String lowerPath) {
+        return lowerPath.contains(".git")
+                || lowerPath.contains("package.json")
+                || lowerPath.contains("package-lock.json")
+                || lowerPath.contains("yarn.lock")
+                || lowerPath.contains("pnpm-lock")
+                || lowerPath.contains("pom.xml")
+                || lowerPath.contains("composer.json")
+                || lowerPath.contains("node_modules")
+                || lowerPath.contains("webpack.config")
+                || lowerPath.contains("vite.config");
+    }
+
     private String normalizePath(String path) {
         if (path == null || path.isEmpty()) {
             return "/";
@@ -457,11 +510,51 @@ public class ThreatDetectionFilter extends OncePerRequestFilter {
     private void writeBlockResponse(HttpServletResponse response, int statusCode, String message) throws IOException {
         response.setStatus(statusCode);
         response.setContentType("application/json;charset=UTF-8");
-        Result<Object> result = Result.error(message);
+        Result<Object> result = Result.error(message, statusCode);
         try (PrintWriter writer = response.getWriter()) {
             writer.write(JSON.toJSONString(result));
             writer.flush();
         }
+    }
+
+    private String resolveClientTool(String userAgent) {
+        if (!StringUtils.hasText(userAgent)) {
+            return "UNKNOWN";
+        }
+        String normalized = userAgent.toLowerCase(Locale.ROOT);
+        if (normalized.contains("sqlmap")) {
+            return "SQLMAP";
+        }
+        if (normalized.contains("nikto")) {
+            return "NIKTO";
+        }
+        if (normalized.contains("gobuster")) {
+            return "GOBUSTER";
+        }
+        if (normalized.contains("dirbuster")) {
+            return "DIRBUSTER";
+        }
+        if (normalized.contains("curl")) {
+            return "CURL";
+        }
+        if (normalized.contains("python-requests")) {
+            return "PYTHON_REQUESTS";
+        }
+        if (normalized.contains("postmanruntime")) {
+            return "POSTMAN";
+        }
+        if (normalized.contains("mozilla")) {
+            return "BROWSER";
+        }
+        return "UNKNOWN";
+    }
+
+    private Integer resolveBrowserTrusted(String userAgent, String browserFingerprint) {
+        boolean browserLike = StringUtils.hasText(userAgent) && userAgent.toLowerCase(Locale.ROOT).contains("mozilla");
+        if (!browserLike) {
+            return 0;
+        }
+        return StringUtils.hasText(browserFingerprint) && browserFingerprint.length() >= 16 ? 1 : 0;
     }
 
     private static class BlockDecision {

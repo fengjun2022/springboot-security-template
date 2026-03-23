@@ -89,7 +89,9 @@ public class UserPermissionCacheService {
                 .distinct()
                 .collect(Collectors.toList());
 
-        List<String> permissionCodes = permissions.stream()
+        List<String> permissionCodes = (roleCodes.stream().anyMatch(roleCode -> "SUPER_ADMIN".equalsIgnoreCase(roleCode))
+                ? rbacPermissionMapper.selectEnabledList()
+                : permissions).stream()
                 .map(RbacPermissionEntity::getPermCode)
                 .filter(Objects::nonNull)
                 .distinct()

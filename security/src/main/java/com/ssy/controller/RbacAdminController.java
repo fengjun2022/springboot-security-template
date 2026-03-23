@@ -1,5 +1,7 @@
 package com.ssy.controller;
 
+import com.ssy.entity.ApiEndpointEntity;
+import com.ssy.entity.FrontendRouteEntity;
 import com.ssy.dto.UserEntity;
 import com.ssy.entity.RbacPermissionEntity;
 import com.ssy.entity.RbacRoleEntity;
@@ -24,6 +26,15 @@ public class RbacAdminController {
     public Result<UserEntity> me() {
         try {
             return Result.success(rbacIdentityService.sanitizeUser(rbacIdentityService.requireCurrentUser()));
+        } catch (Exception e) {
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @GetMapping("/frontend-routes/me")
+    public Result<List<FrontendRouteEntity>> currentFrontendRoutes() {
+        try {
+            return Result.success(rbacIdentityService.listCurrentUserFrontendRoutes());
         } catch (Exception e) {
             return Result.error(e.getMessage());
         }
@@ -229,6 +240,39 @@ public class RbacAdminController {
         }
     }
 
+    @PreAuthorize("hasAuthority('iam:endpoint:permission:read')")
+    @GetMapping("/permissions/{permissionId}/endpoints")
+    public Result<List<ApiEndpointEntity>> listPermissionEndpoints(@PathVariable Long permissionId) {
+        try {
+            return Result.success(rbacIdentityService.listEndpointsByPermission(permissionId));
+        } catch (Exception e) {
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasAuthority('api:endpoint:read')")
+    @GetMapping("/endpoints/available")
+    public Result<List<ApiEndpointEntity>> listAvailableEndpoints(
+            @RequestParam(required = false) Long permissionId) {
+        try {
+            return Result.success(rbacIdentityService.listAvailableEndpointsForPermission(permissionId));
+        } catch (Exception e) {
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasAuthority('iam:endpoint:permission:bind')")
+    @PutMapping("/permissions/{permissionId}/endpoints")
+    public Result<List<ApiEndpointEntity>> replacePermissionEndpoints(
+            @PathVariable Long permissionId, @RequestBody ReplacePermissionEndpointsDTO dto) {
+        try {
+            List<Long> endpointIds = dto == null ? Collections.emptyList() : dto.getEndpointIds();
+            return Result.success(rbacIdentityService.replacePermissionEndpoints(permissionId, endpointIds));
+        } catch (Exception e) {
+            return Result.error(e.getMessage());
+        }
+    }
+
     @PreAuthorize("hasAuthority('iam:endpoint:permission:bind')")
     @PutMapping("/endpoints/module-permissions")
     public Result<RbacIdentityService.ModuleEndpointPermissionBindResult> replaceModuleEndpointPermissions(
@@ -255,6 +299,61 @@ public class RbacAdminController {
         } catch (Exception e) {
             return Result.error(e.getMessage());
         }
+    }
+
+    @PreAuthorize("hasAuthority('iam:frontend-route:read')")
+    @GetMapping("/frontend-routes")
+    public Result<List<FrontendRouteEntity>> listFrontendRoutes() {
+        try {
+            return Result.success(rbacIdentityService.listFrontendRoutes());
+        } catch (Exception e) {
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasAuthority('iam:frontend-route:create')")
+    @PostMapping("/frontend-routes")
+    public Result<FrontendRouteEntity> createFrontendRoute(@RequestBody FrontendRouteDTO dto) {
+        try {
+            RbacIdentityService.CreateFrontendRouteCommand cmd = new RbacIdentityService.CreateFrontendRouteCommand();
+            applyFrontendRouteDto(cmd, dto);
+            return Result.success(rbacIdentityService.createFrontendRoute(cmd));
+        } catch (Exception e) {
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasAuthority('iam:frontend-route:update')")
+    @PutMapping("/frontend-routes/{routeId}")
+    public Result<FrontendRouteEntity> updateFrontendRoute(@PathVariable Long routeId,
+                                                           @RequestBody FrontendRouteDTO dto) {
+        try {
+            RbacIdentityService.UpdateFrontendRouteCommand cmd = new RbacIdentityService.UpdateFrontendRouteCommand();
+            applyFrontendRouteDto(cmd, dto);
+            return Result.success(rbacIdentityService.updateFrontendRoute(routeId, cmd));
+        } catch (Exception e) {
+            return Result.error(e.getMessage());
+        }
+    }
+
+    private void applyFrontendRouteDto(RbacIdentityService.BaseFrontendRouteCommand cmd, FrontendRouteDTO dto) {
+        cmd.setParentId(dto.getParentId());
+        cmd.setRouteName(dto.getRouteName());
+        cmd.setRoutePath(dto.getRoutePath());
+        cmd.setComponent(dto.getComponent());
+        cmd.setRedirectPath(dto.getRedirectPath());
+        cmd.setTitle(dto.getTitle());
+        cmd.setIcon(dto.getIcon());
+        cmd.setResourceType(dto.getResourceType());
+        cmd.setPermissionCode(dto.getPermissionCode());
+        cmd.setStatus(dto.getStatus());
+        cmd.setVisible(dto.getVisible());
+        cmd.setSort(dto.getSort());
+        cmd.setKeepAlive(dto.getKeepAlive());
+        cmd.setAlwaysShow(dto.getAlwaysShow());
+        cmd.setIgnoreAuth(dto.getIgnoreAuth());
+        cmd.setActiveMenu(dto.getActiveMenu());
+        cmd.setRemark(dto.getRemark());
     }
 
     @PreAuthorize("hasAuthority('iam:grant-rule:update')")
@@ -410,6 +509,13 @@ public class RbacAdminController {
         public void setPermissionCodes(List<String> permissionCodes) { this.permissionCodes = permissionCodes; }
     }
 
+    public static class ReplacePermissionEndpointsDTO {
+        private List<Long> endpointIds;
+
+        public List<Long> getEndpointIds() { return endpointIds; }
+        public void setEndpointIds(List<Long> endpointIds) { this.endpointIds = endpointIds; }
+    }
+
     public static class ReplaceModuleEndpointPermissionsDTO {
         private String moduleGroup;
         private List<String> permissionCodes;
@@ -447,6 +553,61 @@ public class RbacAdminController {
         public void setCanUpdateUserOfRole(Integer canUpdateUserOfRole) { this.canUpdateUserOfRole = canUpdateUserOfRole; }
         public Integer getStatus() { return status; }
         public void setStatus(Integer status) { this.status = status; }
+        public String getRemark() { return remark; }
+        public void setRemark(String remark) { this.remark = remark; }
+    }
+
+    public static class FrontendRouteDTO {
+        private Long parentId;
+        private String routeName;
+        private String routePath;
+        private String component;
+        private String redirectPath;
+        private String title;
+        private String icon;
+        private String resourceType;
+        private String permissionCode;
+        private Integer status;
+        private Integer visible;
+        private Integer sort;
+        private Integer keepAlive;
+        private Integer alwaysShow;
+        private Integer ignoreAuth;
+        private String activeMenu;
+        private String remark;
+
+        public Long getParentId() { return parentId; }
+        public void setParentId(Long parentId) { this.parentId = parentId; }
+        public String getRouteName() { return routeName; }
+        public void setRouteName(String routeName) { this.routeName = routeName; }
+        public String getRoutePath() { return routePath; }
+        public void setRoutePath(String routePath) { this.routePath = routePath; }
+        public String getComponent() { return component; }
+        public void setComponent(String component) { this.component = component; }
+        public String getRedirectPath() { return redirectPath; }
+        public void setRedirectPath(String redirectPath) { this.redirectPath = redirectPath; }
+        public String getTitle() { return title; }
+        public void setTitle(String title) { this.title = title; }
+        public String getIcon() { return icon; }
+        public void setIcon(String icon) { this.icon = icon; }
+        public String getResourceType() { return resourceType; }
+        public void setResourceType(String resourceType) { this.resourceType = resourceType; }
+        public String getPermissionCode() { return permissionCode; }
+        public void setPermissionCode(String permissionCode) { this.permissionCode = permissionCode; }
+        public Integer getStatus() { return status; }
+        public void setStatus(Integer status) { this.status = status; }
+        public Integer getVisible() { return visible; }
+        public void setVisible(Integer visible) { this.visible = visible; }
+        public Integer getSort() { return sort; }
+        public void setSort(Integer sort) { this.sort = sort; }
+        public Integer getKeepAlive() { return keepAlive; }
+        public void setKeepAlive(Integer keepAlive) { this.keepAlive = keepAlive; }
+        public Integer getAlwaysShow() { return alwaysShow; }
+        public void setAlwaysShow(Integer alwaysShow) { this.alwaysShow = alwaysShow; }
+        public Integer getIgnoreAuth() { return ignoreAuth; }
+        public void setIgnoreAuth(Integer ignoreAuth) { this.ignoreAuth = ignoreAuth; }
+        public String getActiveMenu() { return activeMenu; }
+        public void setActiveMenu(String activeMenu) { this.activeMenu = activeMenu; }
         public String getRemark() { return remark; }
         public void setRemark(String remark) { this.remark = remark; }
     }

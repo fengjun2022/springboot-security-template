@@ -2,6 +2,7 @@
 security:
   permit-all: # 权限访问白名单
     - "/login"
+    - "/security-auth/**"
     - "/css/**"
     - "/js/**"
     - "/user/register"
@@ -41,6 +42,21 @@ security:
     auth403-auto-block-threshold: 12
     event-queue-capacity: 4096
     blacklist-queue-capacity: 1024
+    device-risk-enabled: true
+    device-risk-captcha-score-threshold: 45
+    device-risk-block-score-threshold: 90
+    device-risk-new-device-score: 8
+    device-risk-ip-drift-score: 24
+    device-risk-ua-drift-score: 24
+    device-risk-multi-account-score: 32
+    device-risk-failure-penalty: 8
+    device-risk-account-switch-window-ms: 900000
+    device-risk-account-switch-threshold: 2
+  audit:
+    enabled: true
+    retention-days: 90
+    max-rows-per-table: 20000000
+    queue-capacity: 4096
 
 jwt:
   secret-key: nangtongcourtjj1001001

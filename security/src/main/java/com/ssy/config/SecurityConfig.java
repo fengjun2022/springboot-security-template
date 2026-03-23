@@ -1,8 +1,10 @@
 package com.ssy.config;
 
+import com.ssy.filter.AuditTrailFilter;
 import com.ssy.filter.CustomAuthenticationFilter;
 import com.ssy.filter.EndpointRbacAuthorizationFilter;
 import com.ssy.filter.JwtAuthorizationFilter;
+import com.ssy.filter.PacketFingerprintFilter;
 import com.ssy.filter.RequestUserContextFilter;
 import com.ssy.filter.ServicePermissionFilter;
 import com.ssy.filter.ThreatDetectionFilter;
@@ -10,19 +12,22 @@ import com.ssy.handler.CustomAccessDeniedHandler;
 import com.ssy.properties.SecurityProperties;
 import com.ssy.security.ServiceCallVoter;
 import com.ssy.service.CustomUserDetailsService;
+import com.ssy.service.impl.AuditLogAsyncRecorderService;
+import com.ssy.service.impl.AttackEventAsyncRecorderService;
+import com.ssy.service.impl.EndpointRbacCacheService;
+import com.ssy.properties.JwtProperties;
+import com.ssy.service.impl.LoginSecurityService;
+import com.ssy.service.impl.PacketFingerprintService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.access.AccessDecisionManager;
-import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.access.vote.AuthenticatedVoter;
 import org.springframework.security.access.vote.RoleVoter;
-import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
@@ -33,8 +38,6 @@ import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.Arrays;
-import java.util.List;
-
 @Configuration
 
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -46,8 +49,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private final SecurityProperties securityProperties;
-
-
+    private final AuditLogAsyncRecorderService auditLogAsyncRecorderService;
+    private final EndpointRbacCacheService endpointRbacCacheService;
+    private final JwtProperties jwtProperties;
+    private final LoginSecurityService loginSecurityService;
+    private final AttackEventAsyncRecorderService attackEventAsyncRecorderService;
+    private final PacketFingerprintService packetFingerprintService;
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
@@ -70,13 +77,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public PacketFingerprintFilter packetFingerprintFilter(PacketFingerprintService packetFingerprintService) {
+        return new PacketFingerprintFilter(packetFingerprintService);
+    }
+
+    @Bean
     public EndpointRbacAuthorizationFilter endpointRbacAuthorizationFilter() {
         return new EndpointRbacAuthorizationFilter();
     }
 
     @Bean
-    public CustomAuthenticationFilter customAuthenticationFilter() throws Exception {
-        return new CustomAuthenticationFilter(authenticationManager());
+    public AuditTrailFilter auditTrailFilter(AuditLogAsyncRecorderService auditLogAsyncRecorderService,
+                                             EndpointRbacCacheService endpointRbacCacheService) {
+        return new AuditTrailFilter(auditLogAsyncRecorderService, endpointRbacCacheService);
+    }
+
+    @Bean
+    public CustomAuthenticationFilter customAuthenticationFilter(JwtProperties jwtProperties,
+                                                                 LoginSecurityService loginSecurityService,
+                                                                 AttackEventAsyncRecorderService attackEventAsyncRecorderService,
+                                                                 PacketFingerprintService packetFingerprintService) throws Exception {
+        return new CustomAuthenticationFilter(authenticationManager(), jwtProperties, loginSecurityService, attackEventAsyncRecorderService, packetFingerprintService);
     }
 
     @Bean
@@ -97,8 +118,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Autowired
-    public SecurityConfig(SecurityProperties securityProperties) {
+    public SecurityConfig(SecurityProperties securityProperties,
+                          AuditLogAsyncRecorderService auditLogAsyncRecorderService,
+                          EndpointRbacCacheService endpointRbacCacheService,
+                          JwtProperties jwtProperties,
+                          LoginSecurityService loginSecurityService,
+                          AttackEventAsyncRecorderService attackEventAsyncRecorderService,
+                          PacketFingerprintService packetFingerprintService) {
         this.securityProperties = securityProperties;
+        this.auditLogAsyncRecorderService = auditLogAsyncRecorderService;
+        this.endpointRbacCacheService = endpointRbacCacheService;
+        this.jwtProperties = jwtProperties;
+        this.loginSecurityService = loginSecurityService;
+        this.attackEventAsyncRecorderService = attackEventAsyncRecorderService;
+        this.packetFingerprintService = packetFingerprintService;
     }
 
     // 直接配置 AccessDecisionManager
@@ -124,6 +157,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         // 配置 CORS 策略支持跨域请求
         http.cors().and();
+
+        // 审计过滤器包住整条安全链，记录全局/业务/安全操作日志
+        http.addFilterBefore(auditTrailFilter(auditLogAsyncRecorderService, endpointRbacCacheService), UsernamePasswordAuthenticationFilter.class);
 
         // 先注册 ServicePermissionFilter，让其类在 Spring Security 过滤器顺序表中可作为锚点
         http.addFilterBefore(servicePermissionFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -156,11 +192,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 设置 Session 管理为无状态，不在服务端保存 Session 信息
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         // 添加自定义认证过滤器（处理 JSON 格式的登录请求）
-        http.addFilter(customAuthenticationFilter());
+        http.addFilter(customAuthenticationFilter(jwtProperties, loginSecurityService, attackEventAsyncRecorderService, packetFingerprintService));
         // 添加 JWT 授权过滤器，在认证过滤器之前拦截请求，根据请求头中的 JWT Token 进行授权验证
         http.addFilterBefore(jwtAuthorizationFilter(), CustomAuthenticationFilter.class);
+        // 校验请求包指纹，防重放/参数篡改
+        http.addFilterAfter(packetFingerprintFilter(packetFingerprintService), JwtAuthorizationFilter.class);
         // 将登录主体写入线程上下文（供业务层/过滤器热路径读取）
-        http.addFilterAfter(requestUserContextFilter(), JwtAuthorizationFilter.class);
+        http.addFilterAfter(requestUserContextFilter(), PacketFingerprintFilter.class);
         // 基于 api_endpoints 的接口级 RBAC 快速预检（复杂表达式仍由方法级注解兜底）
         http.addFilterAfter(endpointRbacAuthorizationFilter(), RequestUserContextFilter.class);
         // 设置自定义的用户权限不足返回错误

@@ -22,11 +22,14 @@ public class AttackEventAsyncRecorderService {
     private static final Logger log = LoggerFactory.getLogger(AttackEventAsyncRecorderService.class);
 
     private final SecurityAttackEventMapper securityAttackEventMapper;
+    private final IpGeoLocationService ipGeoLocationService;
     private final ExecutorService executor;
 
     public AttackEventAsyncRecorderService(SecurityAttackEventMapper securityAttackEventMapper,
+                                           IpGeoLocationService ipGeoLocationService,
                                            ThreatDetectionProperties properties) {
         this.securityAttackEventMapper = securityAttackEventMapper;
+        this.ipGeoLocationService = ipGeoLocationService;
         this.executor = new ThreadPoolExecutor(
                 1,
                 1,
@@ -49,6 +52,15 @@ public class AttackEventAsyncRecorderService {
         executor.execute(() -> {
             try {
                 securityAttackEventMapper.insert(entity);
+                if (entity.getId() != null) {
+                    IpGeoLocationService.GeoInfo geoInfo = ipGeoLocationService.resolve(entity.getIp());
+                    entity.setCountry(geoInfo.getCountry());
+                    entity.setRegionName(geoInfo.getRegionName());
+                    entity.setCity(geoInfo.getCity());
+                    entity.setIsp(geoInfo.getIsp());
+                    entity.setLocationLabel(geoInfo.getLocationLabel());
+                    securityAttackEventMapper.updateGeoInfo(entity);
+                }
             } catch (Exception e) {
                 log.warn("异步写入安全异常事件失败 type={}, path={}: {}",
                         entity.getAttackType(), entity.getPath(), e.getMessage());

@@ -24,6 +24,7 @@ public class UserEntity implements Serializable {
      private Integer status;
      private String token;
      private java.time.LocalDateTime createTime;
+     private java.time.LocalDateTime updateTime;
      private Collection<String> authorities;
 
      // 显式的setter方法（确保兼容性）

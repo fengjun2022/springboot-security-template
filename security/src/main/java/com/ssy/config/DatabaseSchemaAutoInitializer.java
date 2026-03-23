@@ -35,12 +35,19 @@ public class DatabaseSchemaAutoInitializer implements InitializingBean {
             "security_ip_blacklist",
             "security_ip_whitelist",
             "security_attack_event",
+            "security_threat_config",
+            "security_audit_config",
+            "security_audit_table_meta",
+            "security_audit_global_0001",
+            "security_audit_security_0001",
+            "security_audit_business_0001",
             "sys_role",
             "sys_permission",
             "sys_permission_endpoint_rel",
             "sys_user_role",
             "sys_role_permission",
-            "sys_role_grant_rule"
+            "sys_role_grant_rule",
+            "sys_frontend_route"
     );
 
     private final JdbcTemplate jdbcTemplate;
@@ -62,14 +69,23 @@ public class DatabaseSchemaAutoInitializer implements InitializingBean {
                 log.warn("检测到缺失表，准备执行 security.sql 初始化。缺失表: {}", missingTables);
                 executeSecuritySql();
                 validateRequiredTables();
+                ensureUserTimeColumns();
                 ensureApiEndpointsAuthColumn();
                 ensureApiEndpointsThreatMonitorColumn();
+                ensureSecurityAttackEventColumns();
+                ensureSecurityThreatConfigColumns();
+                ensureAuditTableApiDescriptionColumn();
                 log.info("数据库初始化脚本执行完成");
                 return;
             }
 
+            ensureUserTimeColumns();
             ensureApiEndpointsAuthColumn();
             ensureApiEndpointsThreatMonitorColumn();
+            ensureSecurityAttackEventColumns();
+            ensureSecurityThreatConfigColumns();
+            ensureAuditTableApiDescriptionColumn();
+            ensureFrontendRouteSeeds();
         } catch (Exception e) {
             log.error("数据库表结构自动初始化失败", e);
             throw new IllegalStateException("数据库表结构自动初始化失败", e);
@@ -110,6 +126,16 @@ public class DatabaseSchemaAutoInitializer implements InitializingBean {
         log.info("已补齐 api_endpoints.auth 列");
     }
 
+    private void ensureUserTimeColumns() {
+        if (!tableExists("user")) {
+            return;
+        }
+        ensureColumn("user", "create_time",
+                "ALTER TABLE `user` ADD COLUMN create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间' AFTER user_id");
+        ensureColumn("user", "update_time",
+                "ALTER TABLE `user` ADD COLUMN update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间' AFTER create_time");
+    }
+
     private void ensureApiEndpointsThreatMonitorColumn() {
         if (!tableExists("api_endpoints")) {
             return;
@@ -130,6 +156,116 @@ public class DatabaseSchemaAutoInitializer implements InitializingBean {
         if (!stillMissing.isEmpty()) {
             throw new IllegalStateException("执行 security.sql 后仍缺少表: " + stillMissing);
         }
+    }
+
+    private void ensureSecurityAttackEventColumns() {
+        if (!tableExists("security_attack_event")) {
+            return;
+        }
+        ensureColumn("security_attack_event", "country",
+                "ALTER TABLE security_attack_event ADD COLUMN country VARCHAR(64) NULL COMMENT '国家' AFTER ip");
+        ensureColumn("security_attack_event", "region_name",
+                "ALTER TABLE security_attack_event ADD COLUMN region_name VARCHAR(64) NULL COMMENT '地区/省份' AFTER country");
+        ensureColumn("security_attack_event", "city",
+                "ALTER TABLE security_attack_event ADD COLUMN city VARCHAR(64) NULL COMMENT '城市' AFTER region_name");
+        ensureColumn("security_attack_event", "isp",
+                "ALTER TABLE security_attack_event ADD COLUMN isp VARCHAR(128) NULL COMMENT '运营商' AFTER city");
+        ensureColumn("security_attack_event", "location_label",
+                "ALTER TABLE security_attack_event ADD COLUMN location_label VARCHAR(255) NULL COMMENT '归属地标签' AFTER isp");
+        ensureColumn("security_attack_event", "client_tool",
+                "ALTER TABLE security_attack_event ADD COLUMN client_tool VARCHAR(64) NULL COMMENT '可疑客户端工具' AFTER app_id");
+        ensureColumn("security_attack_event", "browser_fingerprint",
+                "ALTER TABLE security_attack_event ADD COLUMN browser_fingerprint VARCHAR(128) NULL COMMENT '浏览器指纹' AFTER client_tool");
+        ensureColumn("security_attack_event", "browser_trusted",
+                "ALTER TABLE security_attack_event ADD COLUMN browser_trusted TINYINT(1) NOT NULL DEFAULT 0 COMMENT '浏览器指纹可信(0否,1是)' AFTER browser_fingerprint");
+    }
+
+    private void ensureSecurityThreatConfigColumns() {
+        if (!tableExists("security_threat_config")) {
+            return;
+        }
+        ensureColumn("security_threat_config", "device_risk_enabled",
+                "ALTER TABLE security_threat_config ADD COLUMN device_risk_enabled TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否启用设备信誉引擎' AFTER blacklist_queue_capacity");
+        ensureColumn("security_threat_config", "device_risk_captcha_score_threshold",
+                "ALTER TABLE security_threat_config ADD COLUMN device_risk_captcha_score_threshold INT NOT NULL DEFAULT 45 COMMENT '触发图片验证码的风险阈值' AFTER device_risk_enabled");
+        ensureColumn("security_threat_config", "device_risk_block_score_threshold",
+                "ALTER TABLE security_threat_config ADD COLUMN device_risk_block_score_threshold INT NOT NULL DEFAULT 90 COMMENT '拒绝登录的设备风险阈值' AFTER device_risk_captcha_score_threshold");
+        ensureColumn("security_threat_config", "device_risk_new_device_score",
+                "ALTER TABLE security_threat_config ADD COLUMN device_risk_new_device_score INT NOT NULL DEFAULT 8 COMMENT '新设备附加分' AFTER device_risk_block_score_threshold");
+        ensureColumn("security_threat_config", "device_risk_ip_drift_score",
+                "ALTER TABLE security_threat_config ADD COLUMN device_risk_ip_drift_score INT NOT NULL DEFAULT 24 COMMENT '同设备切换IP附加分' AFTER device_risk_new_device_score");
+        ensureColumn("security_threat_config", "device_risk_ua_drift_score",
+                "ALTER TABLE security_threat_config ADD COLUMN device_risk_ua_drift_score INT NOT NULL DEFAULT 24 COMMENT '同设备切换UA附加分' AFTER device_risk_ip_drift_score");
+        ensureColumn("security_threat_config", "device_risk_multi_account_score",
+                "ALTER TABLE security_threat_config ADD COLUMN device_risk_multi_account_score INT NOT NULL DEFAULT 32 COMMENT '多账号切换附加分' AFTER device_risk_ua_drift_score");
+        ensureColumn("security_threat_config", "device_risk_failure_penalty",
+                "ALTER TABLE security_threat_config ADD COLUMN device_risk_failure_penalty INT NOT NULL DEFAULT 8 COMMENT '单次失败附加分' AFTER device_risk_multi_account_score");
+        ensureColumn("security_threat_config", "device_risk_account_switch_window_ms",
+                "ALTER TABLE security_threat_config ADD COLUMN device_risk_account_switch_window_ms BIGINT NOT NULL DEFAULT 900000 COMMENT '设备切换账号窗口毫秒数' AFTER device_risk_failure_penalty");
+        ensureColumn("security_threat_config", "device_risk_account_switch_threshold",
+                "ALTER TABLE security_threat_config ADD COLUMN device_risk_account_switch_threshold INT NOT NULL DEFAULT 2 COMMENT '设备切换账号阈值' AFTER device_risk_account_switch_window_ms");
+    }
+
+    /**
+     * 为所有已存在的审计日志分表补齐 api_description 列（动态匹配 api_endpoints 接口描述用）。
+     */
+    private void ensureAuditTableApiDescriptionColumn() {
+        List<String> auditTables = jdbcTemplate.queryForList(
+                "SELECT table_name FROM information_schema.tables " +
+                        "WHERE table_schema = DATABASE() AND table_name LIKE 'security_audit_%' " +
+                        "AND table_name NOT IN ('security_audit_config', 'security_audit_table_meta')",
+                String.class
+        );
+        for (String table : auditTables) {
+            if (!columnExists(table, "api_description")) {
+                log.warn("检测到审计日志表 {} 缺少 api_description 列，自动补齐", table);
+                jdbcTemplate.execute("ALTER TABLE " + table +
+                        " ADD COLUMN api_description VARCHAR(500) NULL COMMENT '接口描述(来自api_endpoints表)' AFTER ext_json");
+            }
+        }
+    }
+
+    private void ensureColumn(String tableName, String columnName, String ddl) {
+        if (columnExists(tableName, columnName)) {
+            return;
+        }
+        log.warn("检测到 {} 表缺少 {} 列，自动补齐", tableName, columnName);
+        jdbcTemplate.execute(ddl);
+    }
+
+    private void ensureFrontendRouteSeeds() {
+        if (!tableExists("sys_frontend_route") || !tableExists("sys_permission")) {
+            return;
+        }
+        Integer routeSeedCount = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM sys_frontend_route WHERE route_name IN (?, ?, ?, ?, ?, ?, ?, ?)",
+                Integer.class,
+                "system_frontend_routes",
+                "system_frontend_routes_create_button",
+                "system_frontend_routes_edit_button",
+                "system_security_center",
+                "system_security_settings",
+                "system_security_logs",
+                "system_audit_center",
+                "system_audit_business_logs"
+        );
+        Integer permissionSeedCount = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM sys_permission WHERE perm_code IN (?, ?, ?, ?, ?, ?)",
+                Integer.class,
+                "iam:frontend-route:read",
+                "iam:frontend-route:create",
+                "iam:frontend-route:update",
+                "security:settings:read",
+                "audit:log:read",
+                "audit:log:manage"
+        );
+        boolean routeSeedsMissing = routeSeedCount == null || routeSeedCount < 8;
+        boolean permissionSeedsMissing = permissionSeedCount == null || permissionSeedCount < 6;
+        if (!routeSeedsMissing && !permissionSeedsMissing) {
+            return;
+        }
+        log.warn("检测到前端资源权限种子缺失，重新执行 security.sql 进行补齐");
+        executeSecuritySql();
     }
 
     private void executeSecuritySql() {
